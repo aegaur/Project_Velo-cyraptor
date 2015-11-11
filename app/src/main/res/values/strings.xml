@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Project_Velo-Cyraptor</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+     <string name="action_settings">Settings</string>
+
+     <string name="section_run">Run</string>
+     <string name="section_stats">Statistics</string>
+     <string name="section_history">History</string>
 </resources>
