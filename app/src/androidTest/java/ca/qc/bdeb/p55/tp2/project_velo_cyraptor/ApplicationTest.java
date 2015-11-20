@@ -1,4 +1,4 @@
-package ca.qc.bdeb.p55.labo2.project_velo_cyraptor;
+package ca.qc.bdeb.p55.tp2.project_velo_cyraptor;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
