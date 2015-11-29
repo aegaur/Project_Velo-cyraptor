@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "ca.qc.bdeb.p55.tp2.project_velo_cyraptor"
+        applicationId "ca.qc.bdeb.p55.tp2.myapplication"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -27,4 +27,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:8.3.0'
     compile 'com.google.android.gms:play-services-identity:8.3.0'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
+    compile 'com.android.support:support-v13:23.1.1'
+    compile 'com.android.support:design:23.1.1'
 }

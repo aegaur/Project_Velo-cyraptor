@@ -3,18 +3,33 @@
 
     <string name="title_activity_run">Run</string>
     <string name="activity_run_btn_start">Start a run</string>
+    <string name="activity_bike_btn_start">Start a bike run</string>
     <string name="activity_run_btn_pause">Pause</string>
     <string name="activity_run_btn_stop">Stop</string>
     <string name="activity_run_btn_resume">Resume</string>
     <string name="activity_run_btn_path">Select a path</string>
     <string name="activity_run_lbl_steps_defaut">0</string>
     <string name="activity_run_lbl_calories_defaut">0</string>
-    <string name="activity_run_lbl_vitesse_unit">\u0020km/h</string>
-    <string name="activity_run_lbl_vitesse_defaut">0\u0020km/h</string>
-    <string name="activity_run_lbl_distance_unit">\u0020km</string>
-    <string name="activity_run_lbl_distance_defaut">0\u0020km/h</string>
+    <string name="activity_run_lbl_vitesse_defaut">0.0\u0020km/h</string>
+    <string name="activity_run_lbl_vitesse_valeur">%.1f\u0020km/h</string>
+    <string name="activity_run_lbl_distance_valeur">%.1f\u0020km</string>
+    <string name="activity_run_lbl_distance_defaut">0.0\u0020km</string>
     <string name="activity_run_lbl_steps">Steps :</string>
     <string name="activity_run_lbl_calories">Calories :</string>
     <string name="activity_run_lbl_vitesse">Avg speed :</string>
     <string name="activity_run_lbl_distance">Distance  :</string>
+    <string name="activity_run_chrono_default">00:00:00</string>
+
+    <string name="title_activity_test">Test</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
 </resources>
