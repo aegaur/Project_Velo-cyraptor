@@ -5,7 +5,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import java.util.Random;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Podometre;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CustomChronometer;
@@ -45,10 +45,10 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionL
  */
 public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     private static final float ZOOM_INITIAL = 15.0f;
-    private static final int INTERVALLE_MOUVEMENT_SAUVEGARD = 5;
+    private static final int INTERVALLE_SAUVEGARDE_MOUVEMENT = 5;
     private static final float LARGEUR_LIGNE = 7.5f;
     private static final int NOMBRE_RESULTATS = 3;
-    private static final int NOMBRE_DE_METRE_PAR_KM = 1000;
+    private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
     private static final int INDICE_RESULTAT = 0;
 
     private LinkedList<PointCourse> listePoints = new LinkedList<>();
@@ -56,6 +56,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     private boolean firstTime = true;
 
     private Course course;
+    private Podometre podometre;
     private GoogleMap mMap;
     private Polyline polyline;
     private CustomChronometer chronoTime;
@@ -91,12 +92,12 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        podometre = new Podometre(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.run_fragment_run_run, container, false);
 
         initialiserComposants(view);
@@ -127,40 +128,60 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 if (chronoTime.isRunning()) {
-                    chronoTime.stop();
-                    toggleLayouts(EtatLayoutsRun.STOP_RESUME);
+                    pause();
                 } else {
-                    chronoTime.start();
-                    course = new Course(TypeCourse.A_PIED);
-                    if (listePoints.size() == 0) {
-                        Location location = mMap.getMyLocation();
-                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        listePoints.add(new PointCourse(latLng, chronoTime.getElapsedTimeInMillis()));
-                        polyline = mMap.addPolyline(new PolylineOptions().add(latLng)
-                                .width(LARGEUR_LIGNE)
-                                .color(getResources().getColor(R.color.colorAccent)));
-                    }
-                    toggleLayouts(EtatLayoutsRun.PAUSE);
+                    start();
                 }
             }
         });
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronoTime.reset();
-                toggleLayouts(EtatLayoutsRun.START);
-                listePoints.clear();
-                polyline.remove();
-                resetInfos();
+                stop();
             }
         });
         btnResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronoTime.start();
-                toggleLayouts(EtatLayoutsRun.PAUSE);
+                resume();
             }
         });
+    }
+
+    private void start() {
+        chronoTime.start();
+        podometre.start();
+        toggleLayouts(EtatLayoutsRun.PAUSE);
+        course = new Course(TypeCourse.A_PIED);
+        if (listePoints.size() == 0) {
+            Location location = mMap.getMyLocation();
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            listePoints.add(new PointCourse(latLng, chronoTime.getElapsedTimeInMillis()));
+            polyline = mMap.addPolyline(new PolylineOptions().add(latLng)
+                    .width(LARGEUR_LIGNE)
+                    .color(getResources().getColor(R.color.colorAccent)));
+        }
+    }
+
+    private void pause() {
+        chronoTime.stop();
+        podometre.pause();
+        toggleLayouts(EtatLayoutsRun.STOP_RESUME);
+    }
+
+    private void stop() {
+        chronoTime.reset();
+        podometre.stop();
+        toggleLayouts(EtatLayoutsRun.START);
+        listePoints.clear();
+        polyline.remove();
+        resetInfos();
+    }
+
+    private void resume() {
+        chronoTime.start();
+        podometre.resume();
+        toggleLayouts(EtatLayoutsRun.PAUSE);
     }
 
     private void toggleLayouts(EtatLayoutsRun etatLayoutsRun) {
@@ -224,7 +245,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
                     firstTime = false;
                     myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
-                } else if (onMapAnimationFinished && compteurSecondes >= INTERVALLE_MOUVEMENT_SAUVEGARD
+                } else if (onMapAnimationFinished && compteurSecondes >= INTERVALLE_SAUVEGARDE_MOUVEMENT
                         && chronoTime.isRunning()) {
                     myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
@@ -270,7 +291,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updatePas() {
-        course.setPas(course.getPas() + new Random().nextInt(10));
+        course.setPas(podometre.getNombrePas());
         this.lblSteps.setText(Integer.toString(course.getPas()));
     }
 
@@ -309,7 +330,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
 
     private float calculerDistance(LatLng latLng1, LatLng latLng2, float[] results) {
         Location.distanceBetween(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude, results);
-        return results[INDICE_RESULTAT] / NOMBRE_DE_METRE_PAR_KM;
+        return results[INDICE_RESULTAT] / NOMBRE_DE_METRES_PAR_KM;
     }
 
     private void updatePath(LatLng position) {
