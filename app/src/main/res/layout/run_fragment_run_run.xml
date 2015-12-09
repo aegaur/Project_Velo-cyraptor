@@ -272,6 +272,7 @@
             <ProgressBar
                     android:id="@+id/activity_run_pgs_progres_trajet"
                     android:layout_width="match_parent"
+                    style="?android:attr/progressBarStyleHorizontal"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:max="100"
@@ -286,7 +287,6 @@
         </LinearLayout>
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:map="http://schemas.android.com/apk/res-auto"
                   xmlns:tools="http://schemas.android.com/tools"
                   android:id="@+id/activity_run_map"
                   android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -294,6 +294,5 @@
                   android:layout_height="match_parent"
                   android:layout_weight="1.2"
                   tools:context=".view.run.Run_Run_Fragment"/>
-
     </LinearLayout>
 </FrameLayout>

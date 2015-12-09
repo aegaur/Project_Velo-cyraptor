@@ -19,6 +19,7 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance.DbHelper;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CallbackMap;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CustomChronometer;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
@@ -114,8 +115,8 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     }
 
     private void initialiserComposants(View view) {
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.activity_run_map);
+        SupportMapFragment mapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentById(R.id.activity_run_map);
         mapFragment.getMapAsync(gestionnaireMap);
 
         chronoTime = (CustomChronometer) view.findViewById(R.id.activity_run_chrono);
@@ -240,7 +241,7 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                 }
-                    }).show();
+                            }).show();
         }
 
         return gpsIsEnabled;
