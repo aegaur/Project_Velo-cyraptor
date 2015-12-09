@@ -6,14 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profile;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profil;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Sexe;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Trajet;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by gabriel on 2015-12-09.
@@ -53,17 +55,18 @@ public class DbHelper extends SQLiteOpenHelper {
     // Colonnes Profil
     private static final String PROFIL_ID = "_id";
     private static final String PROFIL_KEY = "key";
-    private static final String PROFIL_VALUE= "value";
+    private static final String PROFIL_VALUE = "value";
     // Profil keys
-    private static final String PROFIL_KEY_POIDS= "poids";
-    private static final String PROFIL_KEY_TAILLE= "taille";
-    private static final String PROFIL_KEY_SEXE= "sexe";
-    private static final String PROFIL_KEY_AGE= "age";
+    private static final String PROFIL_KEY_POIDS = "poids";
+    private static final String PROFIL_KEY_TAILLE = "taille";
+    private static final String PROFIL_KEY_SEXE = "sexe";
+    private static final String PROFIL_KEY_AGE = "age";
     // Profil Defaut
     private static final double POIDS_PAR_DEFAUT = 160;
     private static final double TAILLE_PAR_DEFAUT = 170;
     private static final int AGE_PAR_DEFAUT = 30;
     private static final int SEXE_PAR_DEFAUT = Sexe.INDETERMINE.getINDEX();
+
     // …
     public static DbHelper getInstance(Context context) {
         if (instance == null) {
@@ -98,7 +101,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 + COURSE_VITESSE + " REAL NOT NULL,"
                 + COURSE_CALORIES + " INTEGER NOT NULL,"
                 + COURSE_PAS + " INTEGER NOT NULL," +
-                "FOREIGN KEY (" + COURSE_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")," +
+                "FOREIGN KEY (" + COURSE_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
                 ")";
 
         String createTableTrajet = "CREATE TABLE " + TABLE_TRAJET + "("
@@ -113,7 +116,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 + POINT_LONGITUDE + " REAL NOT NULL,"
                 + POINT_LATITUDE + " REAL NOT NULL,"
                 + POINT_DISTANCE + " REAL NOT NULL," +
-                "FOREIGN KEY (" + POINT_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")," +
+                "FOREIGN KEY (" + POINT_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
                 ")";
 
         String createTableProfil = "CREATE TABLE " + TABLE_PROFIL + "("
@@ -121,27 +124,26 @@ public class DbHelper extends SQLiteOpenHelper {
                 + PROFIL_KEY + " TEXT NOT NULL,"
                 + PROFIL_VALUE + " INTEGER NOT NULL)";
 
+        db.execSQL(createTableTrajet);
+        db.execSQL(createTableCourse);
+        db.execSQL(createTablePoint);
+        db.execSQL(createTableProfil);
+
         ContentValues profilPoids = new ContentValues();
         profilPoids.put(PROFIL_KEY, PROFIL_KEY_POIDS);
         profilPoids.put(PROFIL_VALUE, POIDS_PAR_DEFAUT);
 
         ContentValues profilTaille = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_TAILLE);
-        profilPoids.put(PROFIL_VALUE, TAILLE_PAR_DEFAUT);
+        profilTaille.put(PROFIL_KEY, PROFIL_KEY_TAILLE);
+        profilTaille.put(PROFIL_VALUE, TAILLE_PAR_DEFAUT);
 
         ContentValues profilAge = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_AGE);
-        profilPoids.put(PROFIL_VALUE, AGE_PAR_DEFAUT);
+        profilAge.put(PROFIL_KEY, PROFIL_KEY_AGE);
+        profilAge.put(PROFIL_VALUE, AGE_PAR_DEFAUT);
 
         ContentValues profilSexe = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_SEXE);
-        profilPoids.put(PROFIL_VALUE, SEXE_PAR_DEFAUT);
-
-
-        db.execSQL(createTableTrajet);
-        db.execSQL(createTableCourse);
-        db.execSQL(createTablePoint);
-        db.execSQL(createTableProfil);
+        profilSexe.put(PROFIL_KEY, PROFIL_KEY_SEXE);
+        profilSexe.put(PROFIL_VALUE, SEXE_PAR_DEFAUT);
 
         db.insert(TABLE_PROFIL, null, profilPoids);
         db.insert(TABLE_PROFIL, null, profilTaille);
@@ -157,31 +159,34 @@ public class DbHelper extends SQLiteOpenHelper {
         // Mettre les modifications de votre BD ici
     }
 
-    public Profile getProfile(){
+    public Profil getProfil() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Profile profile = null;
-        HashMap<String,Integer> mapProfil = new HashMap<>();
+        Profil profil = null;
+        HashMap<String, Integer> mapProfil = new HashMap<>();
         Cursor cursor = db.query(TABLE_PROFIL, null, null, null, null, null, null, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
-                mapProfil.put(cursor.getString(0), new Integer(cursor.getString(1)));
-            }while (cursor.moveToNext());
+                mapProfil.put(cursor.getString(cursor.getColumnIndex(PROFIL_KEY)),
+                        new Integer(cursor.getString(cursor.getColumnIndex(PROFIL_VALUE))));
+            } while (cursor.moveToNext());
 
-            profile = new Profile(
+            profil = new Profil(
                     mapProfil.get(PROFIL_KEY_POIDS),
                     Sexe.getSexeByIndex(mapProfil.get(PROFIL_KEY_SEXE)),
                     mapProfil.get(PROFIL_KEY_TAILLE),
                     mapProfil.get(PROFIL_KEY_AGE));
         }
-        return profile;
+        return profil;
     }
 
-    public void insertCourse(Course course){
+    public void insertCourse(Course course) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COURSE_TRAJET_ID, course.getTrajet().getId());
+        if (course.getTrajet() != null) {
+            values.put(COURSE_TRAJET_ID, course.getTrajet().getId());
+        }
         values.put(COURSE_TYPE, course.getTYPE_COURSE().name());
         values.put(COURSE_DATE, course.getDATE().toString());
         values.put(COURSE_DISTANCE, course.getDistance());
@@ -194,7 +199,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertTrajet(Trajet trajet){
+    public void insertTrajet(Trajet trajet) {
         SQLiteDatabase db = this.getWritableDatabase();
         long id;
 
@@ -209,7 +214,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateTrajet(Trajet trajet){
+    public void updateTrajet(Trajet trajet) {
         SQLiteDatabase db = this.getWritableDatabase();
         long id;
 
@@ -226,10 +231,10 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    private void insertPoints(SQLiteDatabase db, long trajetId, LinkedList<PointCourse> listePoitns){
+    private void insertPoints(SQLiteDatabase db, long trajetId, LinkedList<PointCourse> listePoitns) {
         ContentValues values;
 
-        for (PointCourse point:listePoitns) {
+        for (PointCourse point : listePoitns) {
             values = new ContentValues();
             values.put(POINT_TRAJET_ID, trajetId);
             values.put(POINT_LATITUDE, point.getLatitude());
@@ -239,10 +244,70 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void deletePoints(SQLiteDatabase db, long trajetId){
-        db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?",
-                new String[]{String.valueOf(trajetId)});
+    private void deletePoints(SQLiteDatabase db, long trajetId) {
+        db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(trajetId)});
     }
 
+    private void updateProfil(Profil profil) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues profilPoids = new ContentValues();
+        profilPoids.put(PROFIL_KEY, PROFIL_KEY_POIDS);
+        profilPoids.put(PROFIL_VALUE, profil.getPoidsLbs());
+
+        ContentValues profilTaille = new ContentValues();
+        profilPoids.put(PROFIL_KEY, PROFIL_KEY_TAILLE);
+        profilPoids.put(PROFIL_VALUE, profil.getTailleCm());
+
+        ContentValues profilAge = new ContentValues();
+        profilPoids.put(PROFIL_KEY, PROFIL_KEY_AGE);
+        profilPoids.put(PROFIL_VALUE, profil.getAge());
+
+        ContentValues profilSexe = new ContentValues();
+        profilPoids.put(PROFIL_KEY, PROFIL_KEY_SEXE);
+        profilPoids.put(PROFIL_VALUE, profil.getSexe().getINDEX());
+
+        db.delete(TABLE_PROFIL, null, null);
+        db.insert(TABLE_PROFIL, null, profilPoids);
+        db.insert(TABLE_PROFIL, null, profilTaille);
+        db.insert(TABLE_PROFIL, null, profilAge);
+        db.insert(TABLE_PROFIL, null, profilSexe);
+    }
+
+    public ArrayList<Trajet> getTousTrajets() {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Trajet> trajets = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_TRAJET, null, null, null, null, null, TRAJET_NOM, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int idTrajet = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_ID)));
+                Trajet trajet = new Trajet(idTrajet, cursor.getString(cursor.getColumnIndex(TRAJET_NOM)),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_DISTANCE))),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_MEILLEUR_TEMPS))),
+                        getListePointsParIdTrajet(db, idTrajet));
+                trajets.add(trajet);
+            } while (cursor.moveToNext());
+        }
+
+        return trajets;
+    }
+
+    private LinkedList<PointCourse> getListePointsParIdTrajet(SQLiteDatabase db, int idTrajet) {
+        Cursor cursor = db.query(TABLE_POINT, null, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(idTrajet)},
+                null, null, null, null);
+        LinkedList<PointCourse> listePoints = new LinkedList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                PointCourse pointCourse = new PointCourse(cursor.getDouble(cursor.getColumnIndex(POINT_LATITUDE)),
+                        cursor.getDouble(cursor.getColumnIndex(POINT_LONGITUDE)),
+                        cursor.getDouble(cursor.getColumnIndex(POINT_DISTANCE)));
+                listePoints.add(pointCourse);
+            } while (cursor.moveToNext());
+        }
+
+        return listePoints;
+    }
 
 }

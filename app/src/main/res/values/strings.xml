@@ -4,6 +4,10 @@
     <string name="step_counter">android.hardware.sensor.stepcounter</string>
     <string name="step_detector">android.hardware.sensor.stepdetector</string>
 
+    <string name="activity_run_dialog_gps_cancel">Cancel</string>
+    <string name="activity_run_dialog_gps_message">Your GPS seems to be disabled</string>
+    <string name="activity_run_dialog_gps_settings">Go to settings to enable the GPS</string>
+
     <string name="activity_bike_btn_start">Start a bike run</string>
     <string name="activity_bike_section_title">Bike</string>
 
@@ -24,6 +28,11 @@
     <string name="activity_run_lbl_vitesse">Avg speed :</string>
     <string name="activity_run_lbl_distance">Distance  :</string>
     <string name="activity_run_chrono_default">00:00:00</string>
+    <string name="activity_run_path_selection_title">Path selection</string>
+    <string name="activity_run_path_selection_cancel">Cancel</string>
+    <string name="activity_run_path_selection_none">None</string>
+    <string name="activity_run_path_selection_ok">Ok</string>
+    <string name="activity_run_path_selection_no_path">No path to select</string>
 
     <string name="title_activity_test">Test</string>
     <string name="action_settings">Settings</string>
@@ -37,4 +46,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_example">Example action</string>
+    <string name="nav_history">History</string>
+    <string name="nav_stats">Statistics</string>
+    <string name="nav_profil">Profile</string>
+    <string name="title_activity_history">History</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

@@ -3,25 +3,14 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model;
 /**
  * Created by gabriel on 2015-12-04.
  */
-public class Profile {
-
-    private static final double POIDS_PAR_DEFAUT = 160;
-    private static final double TAILLE_PAR_DEFAUT = 170;
-    private static final int AGE_PAR_DEFAUT = 30;
+public class Profil {
 
     private double poidsLbs;
     private Sexe sexe;
     private double tailleCm;
     private int age;
 
-    public Profile() {
-        poidsLbs = POIDS_PAR_DEFAUT;
-        sexe = Sexe.INDETERMINE;
-        tailleCm = TAILLE_PAR_DEFAUT;
-        age = AGE_PAR_DEFAUT;
-    }
-
-    public Profile(double poidsLbs, Sexe sexe, double tailleCm, int age) {
+    public Profil(double poidsLbs, Sexe sexe, double tailleCm, int age) {
         this.poidsLbs = poidsLbs;
         this.sexe = sexe;
         this.tailleCm = tailleCm;

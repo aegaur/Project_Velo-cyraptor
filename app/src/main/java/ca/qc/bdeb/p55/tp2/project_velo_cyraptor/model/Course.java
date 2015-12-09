@@ -10,7 +10,7 @@ public class Course {
     private Trajet trajet;
     private final TypeCourse TYPE_COURSE;
     private final Date DATE;
-    private int duree;
+    private long duree;
     private double distance;
     private double vitesse;
     private int calories;
@@ -81,11 +81,11 @@ public class Course {
         this.distance = distance;
     }
 
-    public int getDuree() {
+    public long getDuree() {
         return duree;
     }
 
-    public void setDuree(int duree) {
+    public void setDuree(long duree) {
         this.duree = duree;
     }
 

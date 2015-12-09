@@ -16,6 +16,12 @@ public class PointCourse {
         this.distance = distance;
     }
 
+    public PointCourse(double latitude, double longitude, double distance) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.distance = distance;
+    }
+
     public LatLng getLatLng(){
         return new LatLng(latitude,longitude);
     }

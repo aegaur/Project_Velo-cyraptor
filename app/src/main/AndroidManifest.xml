@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.qc.bdeb.p55.tp2.project_velo_cyraptor">
+    package="ca.qc.bdeb.p55.tp2.project_velo_cyraptor" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -16,20 +16,28 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".view.run.Run"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.run.History"
+            android:label="@string/title_activity_history"
+            android:parentActivityName=".view.run.Run" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run.Run" />
         </activity>
     </application>
 

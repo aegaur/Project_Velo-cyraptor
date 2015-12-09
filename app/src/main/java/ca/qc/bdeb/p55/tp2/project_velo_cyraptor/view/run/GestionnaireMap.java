@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -120,7 +121,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
     void updatePath(LatLng position) {
         updateDistanceTotale();
         listePoints.add(new PointCourse(position, distanceTotale));
-        polyline.getPoints().add(position);
+        List<LatLng> listeLatLng = polyline.getPoints();
+        listeLatLng.add(position);
+        polyline.setPoints(listeLatLng);
     }
 
     double getDistanceTotale() {

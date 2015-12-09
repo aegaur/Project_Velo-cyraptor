@@ -1,31 +1,27 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run;
 
 import android.app.Activity;
-import android.graphics.drawable.Icon;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.google.android.gms.maps.SupportMapFragment;
-
-import java.util.Random;
-
+import android.widget.*;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Podometre;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profile;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.*;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance.DbHelper;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CallbackMap;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CustomChronometer;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
+import com.google.android.gms.maps.SupportMapFragment;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,15 +41,17 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     private Course course;
     private Podometre podometre;
     private GestionnaireMap gestionnaireMap;
+    private DbHelper dbHelper;
 
     private boolean running;
     private boolean androidKitKatOrHigher;
-    private Profile profile;
+    private Profil profil;
     private CustomChronometer chronoTime;
     private OnFragmentInteractionListener mListener;
     private Button btnStart;
     private Button btnStop;
     private Button btnResume;
+    private Button btnPath;
     private LinearLayout layStartPause;
     private LinearLayout layStopResume;
     private LinearLayout laySteps;
@@ -61,6 +59,8 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     private TextView lblCalories;
     private TextView lblSpeed;
     private TextView lblSteps;
+    private ProgressBar pgsProgresTrajet;
+    private Trajet trajet;
 
     /**
      * Use this factory method to create a new instance of
@@ -83,11 +83,13 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dbHelper = DbHelper.getInstance(getContext());
         podometre = new Podometre(getContext());
         gestionnaireMap = new GestionnaireMap(getContext(), this);
         this.running = getArguments().getBoolean(CLEE_ARGUMENT_RUNNING);
         this.androidKitKatOrHigher = true;
-        this.profile = new Profile();
+        this.profil = dbHelper.getProfil();
+        this.trajet = null;
     }
 
     @Override
@@ -120,6 +122,7 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
         btnStart = (Button) view.findViewById(R.id.activity_run_btn_start);
         btnStop = (Button) view.findViewById(R.id.activity_run_btn_stop);
         btnResume = (Button) view.findViewById(R.id.activity_run_btn_resume);
+        btnPath = (Button) view.findViewById(R.id.activity_run_btn_path);
         layStartPause = (LinearLayout) view.findViewById(R.id.activity_run_lay_start_pause);
         layStopResume = (LinearLayout) view.findViewById(R.id.activity_run_lay_stop_resume);
         lblDistance = (TextView) view.findViewById(R.id.activity_run_lbl_distance);
@@ -127,6 +130,7 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
         lblSteps = (TextView) view.findViewById(R.id.activity_run_lbl_pas);
         lblSpeed = (TextView) view.findViewById(R.id.activity_run_lbl_vitesse);
         laySteps = (LinearLayout) view.findViewById(R.id.activity_run_lay_steps);
+        pgsProgresTrajet = (ProgressBar) view.findViewById(R.id.activity_run_pgs_progres_trajet);
     }
 
     private void initialiserListeners() {
@@ -152,15 +156,94 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
                 resume();
             }
         });
+        btnPath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choisirTrajet();
+            }
+        });
+    }
+
+    private void choisirTrajet() {
+        final ArrayList<Trajet> listeTrajets = dbHelper.getTousTrajets();
+        AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(getContext());
+
+        if (listeTrajets.size() > 0) {
+            constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
+
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.select_dialog_singlechoice);
+
+            arrayAdapter.add(getString(R.string.activity_run_path_selection_none));
+            for (Trajet trajet : listeTrajets) {
+                arrayAdapter.add(trajet.getNom());
+            }
+
+            constructeurDialog.setNegativeButton(R.string.activity_run_path_selection_cancel,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            constructeurDialog.setAdapter(
+                    arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            trajet = --which >= 0 ? trajet = listeTrajets.get(which) : null;
+                        }
+                    });
+            constructeurDialog.show();
+        } else {
+            constructeurDialog.setMessage(R.string.activity_run_path_selection_no_path);
+            constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
+            constructeurDialog.setPositiveButton(R.string.activity_run_path_selection_ok,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            constructeurDialog.show();
+        }
     }
 
     private void start() {
-        chronoTime.start();
-        podometre.start();
-        gestionnaireMap.start();
-        toggleLayouts(EtatLayoutsRun.PAUSE);
-        course = new Course(TypeCourse.A_PIED);
-        gestionnaireMap.start();
+        if (checkGpsEnabled()) {
+            chronoTime.start();
+            podometre.start();
+            gestionnaireMap.start();
+            toggleLayouts(EtatLayoutsRun.PAUSE);
+            course = new Course(TypeCourse.A_PIED);
+            gestionnaireMap.start();
+        }
+    }
+
+    private boolean checkGpsEnabled() {
+        LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsIsEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!gpsIsEnabled) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(R.string.activity_run_dialog_gps_message)
+                    .setPositiveButton(R.string.activity_run_dialog_gps_settings,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent callGPSSettingIntent = new Intent(
+                                            android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivity(callGPSSettingIntent);
+                                }
+                            })
+                    .setNegativeButton(R.string.activity_run_dialog_gps_cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                    }).show();
+        }
+
+        return gpsIsEnabled;
     }
 
     private void pause() {
@@ -171,11 +254,19 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     }
 
     private void stop() {
+        course.setDuree(chronoTime.getElapsedTimeInMillis());
         chronoTime.reset();
         podometre.stop();
         gestionnaireMap.stop();
         toggleLayouts(EtatLayoutsRun.START);
         resetInfos();
+        dbHelper.insertCourse(course);
+        gererTrajet();
+    }
+
+    private void gererTrajet() {
+
+        this.trajet = null;
     }
 
     private void resume() {
@@ -255,7 +346,7 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     private int calculerCalories() {
         return (int) Math.round((distanceKmToMiles(course.getDistance()) /
                 (running ? DIVIDANTE_CONVERTION_DISTANCE_COURSE : DIVIDANTE_CONVERTION_DISTANCE_VELO))
-                * (MULTIPLICATEUR_POIDS_CALORIES * profile.getPoidsLbs()));
+                * (MULTIPLICATEUR_POIDS_CALORIES * profil.getPoidsLbs()));
     }
 
     private double distanceKmToMiles(double distanceKm) {
