@@ -103,4 +103,10 @@ public class CustomChronometer extends TextView {
         double heures = minutes / 60;
         return heures;
     }
+
+    public double getElapsedTimeEnMin() {
+        double secondes = elapsedTimeEnMilliSec / 1000;
+        double minutes = secondes / 60;
+        return minutes;
+    }
 }

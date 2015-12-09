@@ -1,37 +1,76 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model;
 
+
 /**
  * Created by gabriel on 2015-11-27.
  */
 public class Course {
 
+    private int id;
+    private Trajet trajet;
     private final TypeCourse TYPE_COURSE;
+    private final Date DATE;
+    private int duree;
     private double distance;
     private double vitesse;
     private int calories;
     private int pas;
 
     public Course(final TypeCourse TYPE_COURSE) {
+        this.trajet = null;
         this.TYPE_COURSE = TYPE_COURSE;
+        this.DATE = new Date();
         this.distance = 0;
         this.vitesse = 0;
         this.calories = 0;
-        this.pas = 0;
+        this.pas = -1;
     }
 
-    public Course(final TypeCourse TYPE_COURSE, double distance, double vitesse, int calories, int pas) {
+    public Course(int id, Trajet trajet, TypeCourse TYPE_COURSE, Date DATE, int duree, double distance, double vitesse, int calories, int pas) {
+        this.id = id;
+        this.trajet = trajet;
         this.TYPE_COURSE = TYPE_COURSE;
+        this.DATE = DATE;
+        this.duree = duree;
         this.distance = distance;
         this.vitesse = vitesse;
         this.calories = calories;
         this.pas = pas;
     }
 
-    public Course(final TypeCourse TYPE_COURSE, double distance, double vitesse, int calories) {
+    public Course(int id, Trajet trajet, TypeCourse TYPE_COURSE, Date DATE, int duree, double distance, double vitesse, int calories) {
+        this.id = id;
+        this.trajet = trajet;
         this.TYPE_COURSE = TYPE_COURSE;
+        this.DATE = DATE;
+        this.duree = duree;
         this.distance = distance;
         this.vitesse = vitesse;
         this.calories = calories;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Trajet getTrajet() {
+        return trajet;
+    }
+
+    public void setTrajet(Trajet trajet) {
+        this.trajet = trajet;
+    }
+
+    public TypeCourse getTYPE_COURSE() {
+        return TYPE_COURSE;
+    }
+
+    public Date getDATE() {
+        return DATE;
     }
 
     public double getDistance() {
@@ -40,6 +79,14 @@ public class Course {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public int getDuree() {
+        return duree;
+    }
+
+    public void setDuree(int duree) {
+        this.duree = duree;
     }
 
     public double getVitesse() {

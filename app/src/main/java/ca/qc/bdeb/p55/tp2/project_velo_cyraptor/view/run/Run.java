@@ -7,9 +7,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +22,7 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.ViewPagerAdapter;
 public class Run extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
+    private static final int POSITION_TABULATION_RUN = 0;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -44,13 +47,49 @@ public class Run extends AppCompatActivity
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        updateActionBar(POSITION_TABULATION_RUN);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Run_Run_Fragment(), "Run");
-        adapter.addFragment(new Run_Bike_Fragment(), "Bike");
+        adapter.addFragment(Run_Run_Fragment.newInstance(true), getString(R.string.activity_run_section_title));
+        adapter.addFragment(Run_Run_Fragment.newInstance(false), getString(R.string.activity_bike_section_title));
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateActionBar(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+    }
+
+    private void updateActionBar(int position) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            int idIcon;
+            int idTitle;
+            switch (position) {
+                case POSITION_TABULATION_RUN:
+                    idIcon = R.drawable.ic_running;
+                    idTitle = R.string.activity_run_section_title;
+                    break;
+                default:
+                    idIcon = R.drawable.ic_biking;
+                    idTitle = R.string.activity_bike_section_title;
+                    break;
+            }
+            actionBar.setTitle(idTitle);
+            actionBar.setIcon(idIcon);
+        }
     }
 
     @Override

@@ -1,10 +1,12 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run;
 
 import android.app.Activity;
-import android.location.Location;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,26 +14,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Podometre;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profile;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CallbackMap;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CustomChronometer;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
 
@@ -43,22 +35,20 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionL
  * Use the {@link Run_Run_Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
-    private static final float ZOOM_INITIAL = 15.0f;
-    private static final int INTERVALLE_SAUVEGARDE_MOUVEMENT = 5;
-    private static final float LARGEUR_LIGNE = 7.5f;
-    private static final int NOMBRE_RESULTATS = 3;
-    private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
-    private static final int INDICE_RESULTAT = 0;
-
-    private LinkedList<PointCourse> listePoints = new LinkedList<>();
-    private boolean onMapAnimationFinished = false;
-    private boolean firstTime = true;
+public class Run_Run_Fragment extends Fragment implements CallbackMap {
+    private static final String CLEE_ARGUMENT_RUNNING = "running";
+    private static final double MULTIPLICATEUR_POIDS_CALORIES = 0.72;
+    private static final double MULTIPLICATEUR_CONVERTION_KM_TO_MILES = 0.62137;
+    private static final double DIVIDANTE_CONVERTION_DISTANCE_VELO = 5.63;
+    private static final double DIVIDANTE_CONVERTION_DISTANCE_COURSE = 1;
 
     private Course course;
     private Podometre podometre;
-    private GoogleMap mMap;
-    private Polyline polyline;
+    private GestionnaireMap gestionnaireMap;
+
+    private boolean running;
+    private boolean androidKitKatOrHigher;
+    private Profile profile;
     private CustomChronometer chronoTime;
     private OnFragmentInteractionListener mListener;
     private Button btnStart;
@@ -66,6 +56,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     private Button btnResume;
     private LinearLayout layStartPause;
     private LinearLayout layStopResume;
+    private LinearLayout laySteps;
     private TextView lblDistance;
     private TextView lblCalories;
     private TextView lblSpeed;
@@ -77,10 +68,10 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
      *
      * @@return A new instance of fragment Run_Run_Fragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static Run_Run_Fragment newInstance() {
+    public static Run_Run_Fragment newInstance(boolean running) {
         Run_Run_Fragment fragment = new Run_Run_Fragment();
         Bundle args = new Bundle();
+        args.putBoolean(CLEE_ARGUMENT_RUNNING, running);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,6 +84,10 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         podometre = new Podometre(getContext());
+        gestionnaireMap = new GestionnaireMap(getContext(), this);
+        this.running = getArguments().getBoolean(CLEE_ARGUMENT_RUNNING);
+        this.androidKitKatOrHigher = true;
+        this.profile = new Profile();
     }
 
     @Override
@@ -102,14 +97,24 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
 
         initialiserComposants(view);
         initialiserListeners();
+        adapterView();
 
         return view;
+    }
+
+    private void adapterView() {
+        if (!running) {
+            btnStart.setText(R.string.activity_bike_btn_start);
+        }
+        if (!(running && androidKitKatOrHigher)) {
+            laySteps.setVisibility(View.GONE);
+        }
     }
 
     private void initialiserComposants(View view) {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.activity_run_map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(gestionnaireMap);
 
         chronoTime = (CustomChronometer) view.findViewById(R.id.activity_run_chrono);
         btnStart = (Button) view.findViewById(R.id.activity_run_btn_start);
@@ -121,6 +126,7 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
         lblCalories = (TextView) view.findViewById(R.id.activity_run_lbl_calories);
         lblSteps = (TextView) view.findViewById(R.id.activity_run_lbl_pas);
         lblSpeed = (TextView) view.findViewById(R.id.activity_run_lbl_vitesse);
+        laySteps = (LinearLayout) view.findViewById(R.id.activity_run_lay_steps);
     }
 
     private void initialiserListeners() {
@@ -151,36 +157,31 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     private void start() {
         chronoTime.start();
         podometre.start();
+        gestionnaireMap.start();
         toggleLayouts(EtatLayoutsRun.PAUSE);
         course = new Course(TypeCourse.A_PIED);
-        if (listePoints.size() == 0) {
-            Location location = mMap.getMyLocation();
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            listePoints.add(new PointCourse(latLng, chronoTime.getElapsedTimeInMillis()));
-            polyline = mMap.addPolyline(new PolylineOptions().add(latLng)
-                    .width(LARGEUR_LIGNE)
-                    .color(getResources().getColor(R.color.colorAccent)));
-        }
+        gestionnaireMap.start();
     }
 
     private void pause() {
         chronoTime.stop();
         podometre.pause();
+        gestionnaireMap.pause();
         toggleLayouts(EtatLayoutsRun.STOP_RESUME);
     }
 
     private void stop() {
         chronoTime.reset();
         podometre.stop();
+        gestionnaireMap.stop();
         toggleLayouts(EtatLayoutsRun.START);
-        listePoints.clear();
-        polyline.remove();
         resetInfos();
     }
 
     private void resume() {
         chronoTime.start();
         podometre.resume();
+        gestionnaireMap.resume();
         toggleLayouts(EtatLayoutsRun.PAUSE);
     }
 
@@ -227,55 +228,6 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
         mListener = null;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        UiSettings uiSettings = mMap.getUiSettings();
-        mMap.setMyLocationEnabled(true);
-        uiSettings.setMyLocationButtonEnabled(false);
-
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            private int compteurSecondes = 0;
-
-            @Override
-            public void onMyLocationChange(Location location) {
-                LatLng myLatLng;
-                if (firstTime) {
-                    firstTime = false;
-                    myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
-                } else if (onMapAnimationFinished && compteurSecondes >= INTERVALLE_SAUVEGARDE_MOUVEMENT
-                        && chronoTime.isRunning()) {
-                    myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
-                    compteurSecondes = 0;
-                    addPointAndUpdateView(myLatLng);
-                }
-                compteurSecondes++;
-            }
-        });
-    }
-
-    private void animerCameraMap(CameraUpdate cameraUpdate) {
-        mMap.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                onMapAnimationFinished = true;
-            }
-
-            @Override
-            public void onCancel() {
-                onMapAnimationFinished = true;
-            }
-        });
-    }
-
-    private void addPointAndUpdateView(LatLng position) {
-        updatePath(position);
-        updateInfos();
-    }
-
     private void resetInfos() {
         this.lblDistance.setText(getResources().getString(R.string.activity_run_lbl_distance_defaut));
         this.lblSpeed.setText(getResources().getString(R.string.activity_run_lbl_vitesse_defaut));
@@ -296,8 +248,18 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateCalories() {
-        course.setCalories(course.getCalories() + new Random().nextInt(100));
+        course.setCalories(calculerCalories());
         this.lblCalories.setText(Integer.toString(course.getCalories()));
+    }
+
+    private int calculerCalories() {
+        return (int) Math.round((distanceKmToMiles(course.getDistance()) /
+                (running ? DIVIDANTE_CONVERTION_DISTANCE_COURSE : DIVIDANTE_CONVERTION_DISTANCE_VELO))
+                * (MULTIPLICATEUR_POIDS_CALORIES * profile.getPoidsLbs()));
+    }
+
+    private double distanceKmToMiles(double distanceKm) {
+        return distanceKm * MULTIPLICATEUR_CONVERTION_KM_TO_MILES;
     }
 
     private void updateVitesse() {
@@ -311,33 +273,14 @@ public class Run_Run_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void updateDistance() {
-        float[] results = new float[NOMBRE_RESULTATS];
-        float resultat = 0.0f;
-
-        ListIterator<PointCourse> iteratoryPoints = listePoints.listIterator();
-        if (listePoints.size() > 1) {
-            PointCourse point1 = iteratoryPoints.next();
-            while (iteratoryPoints.nextIndex() < listePoints.size()) {
-                PointCourse point2 = iteratoryPoints.next();
-                resultat += calculerDistance(point1.getLatLng(), point2.getLatLng(), results);
-                point1 = point2;
-            }
-        }
+        double resultat = gestionnaireMap.getDistanceTotale();
         this.course.setDistance(resultat);
         String distance = String.format(getResources().getString(R.string.activity_run_lbl_distance_valeur), resultat);
         this.lblDistance.setText(distance);
     }
 
-    private float calculerDistance(LatLng latLng1, LatLng latLng2, float[] results) {
-        Location.distanceBetween(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude, results);
-        return results[INDICE_RESULTAT] / NOMBRE_DE_METRES_PAR_KM;
-    }
-
-    private void updatePath(LatLng position) {
-        PointCourse currentPosition = new PointCourse(position, chronoTime.getElapsedTimeInMillis());
-        List<LatLng> listePoints = polyline.getPoints();
-        listePoints.add(position);
-        polyline.setPoints(listePoints);
-        this.listePoints.add(currentPosition);
+    @Override
+    public void callbackMap() {
+        updateInfos();
     }
 }

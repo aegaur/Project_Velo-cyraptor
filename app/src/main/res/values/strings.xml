@@ -4,9 +4,11 @@
     <string name="step_counter">android.hardware.sensor.stepcounter</string>
     <string name="step_detector">android.hardware.sensor.stepdetector</string>
 
-    <string name="title_activity_run">Run</string>
-    <string name="activity_run_btn_start">Start a run</string>
     <string name="activity_bike_btn_start">Start a bike run</string>
+    <string name="activity_bike_section_title">Bike</string>
+
+    <string name="activity_run_section_title">Run</string>
+    <string name="activity_run_btn_start">Start a run</string>
     <string name="activity_run_btn_pause">Pause</string>
     <string name="activity_run_btn_stop">Stop</string>
     <string name="activity_run_btn_resume">Resume</string>
