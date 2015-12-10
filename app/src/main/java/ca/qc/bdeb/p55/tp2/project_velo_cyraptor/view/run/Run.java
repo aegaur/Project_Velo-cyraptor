@@ -1,5 +1,6 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.history.History;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.ViewPagerAdapter;
 
@@ -124,12 +126,14 @@ public class Run extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+
         if (id == R.id.nav_profil) {
 
         } else if (id == R.id.nav_stats) {
 
         } else if (id == R.id.nav_history) {
-
+            Intent intent = new Intent(this, History.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

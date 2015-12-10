@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/abc_action_bar_overflow_padding_start_material">
+
+    <TextView
+        android:id="@+id/fragment_course_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="Date"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/fragment_course_trajet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="Trajet"
+        android:layout_below="@+id/fragment_course_date"
+        android:layout_alignLeft="@+id/fragment_course_date"
+        android:layout_alignStart="@+id/fragment_course_date"
+        android:layout_marginTop="@dimen/abc_action_bar_overflow_padding_start_material" />
+
+    <TextView
+        android:id="@+id/fragment_course_temps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="Temps"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/fragment_course_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="Distance"
+        android:layout_below="@+id/fragment_course_temps"
+        android:layout_alignLeft="@+id/fragment_course_temps"
+        android:layout_alignStart="@+id/fragment_course_temps"
+        android:layout_marginTop="@dimen/abc_action_bar_overflow_padding_start_material" />
+</RelativeLayout>

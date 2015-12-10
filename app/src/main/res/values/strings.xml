@@ -34,6 +34,9 @@
     <string name="activity_run_path_selection_ok">Ok</string>
     <string name="activity_run_path_selection_no_path">No path to select</string>
 
+
+    <string name="fragment_course_unite_temps"> minutes</string>
+
     <string name="title_activity_test">Test</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -52,4 +55,5 @@
     <string name="title_activity_history">History</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_course_details">CourseDetails</string>
 </resources>

@@ -216,7 +216,7 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
             podometre.start();
             gestionnaireMap.start();
             toggleLayouts(EtatLayoutsRun.PAUSE);
-            course = new Course(TypeCourse.A_PIED);
+            course = new Course(running ? TypeCourse.A_PIED: TypeCourse.A_VELO);
             gestionnaireMap.start();
         }
     }

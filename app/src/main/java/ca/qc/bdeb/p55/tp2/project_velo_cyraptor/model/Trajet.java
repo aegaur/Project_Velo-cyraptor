@@ -12,7 +12,7 @@ public class Trajet {
     private int meilleurTemps;
     private LinkedList<PointCourse> listePoints;
 
-    public Trajet(int id, String nom, int distance, int meilleurTemps, LinkedList<PointCourse> listePoints) {
+    public Trajet(int id, String nom, double distance, int meilleurTemps, LinkedList<PointCourse> listePoints) {
         this.id = id;
         this.nom = nom;
         this.distance = distance;
@@ -20,7 +20,7 @@ public class Trajet {
         this.listePoints = listePoints;
     }
 
-    public Trajet(String nom, int distance, int meilleurTemps) {
+    public Trajet(String nom, double distance, int meilleurTemps) {
         this.nom = nom;
         this.distance = distance;
         this.meilleurTemps = meilleurTemps;

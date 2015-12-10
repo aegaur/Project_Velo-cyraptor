@@ -9,12 +9,16 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Date;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profil;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Sexe;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Trajet;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -283,7 +287,7 @@ public class DbHelper extends SQLiteOpenHelper {
             do {
                 int idTrajet = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_ID)));
                 Trajet trajet = new Trajet(idTrajet, cursor.getString(cursor.getColumnIndex(TRAJET_NOM)),
-                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_DISTANCE))),
+                        cursor.getDouble(cursor.getColumnIndex(TRAJET_DISTANCE)),
                         Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_MEILLEUR_TEMPS))),
                         getListePointsParIdTrajet(db, idTrajet));
                 trajets.add(trajet);
@@ -291,6 +295,21 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
         return trajets;
+    }
+
+    public Trajet getTrajetById(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Trajet trajet = null;
+        Cursor cursor = db.query(TABLE_TRAJET, null, TRAJET_ID + " = ?", new String[]{Integer.toString(id)}, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            trajet = new Trajet(id, cursor.getString(cursor.getColumnIndex(TRAJET_NOM)),
+                    Double.parseDouble(cursor.getString(cursor.getColumnIndex(TRAJET_DISTANCE))),
+                    Integer.parseInt(cursor.getString(cursor.getColumnIndex(TRAJET_MEILLEUR_TEMPS))),
+                    getListePointsParIdTrajet(db, id));
+        }
+
+        return trajet;
     }
 
     private LinkedList<PointCourse> getListePointsParIdTrajet(SQLiteDatabase db, int idTrajet) {
@@ -310,4 +329,27 @@ public class DbHelper extends SQLiteOpenHelper {
         return listePoints;
     }
 
+    public List<Course> getTousCourses(String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Course> courses = new ArrayList<>();
+        Cursor cursor = db.query(TABLE_COURSE, null, COURSE_TYPE + " = ?", new String[]{type}, null, null, COURSE_DATE + " DESC", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Course course = new Course(
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(COURSE_ID))),
+                        getTrajetById(cursor.getInt(cursor.getColumnIndex(COURSE_TRAJET_ID))),
+                        TypeCourse.valueOf(cursor.getString(cursor.getColumnIndex(COURSE_TYPE))),
+                        new Date(cursor.getString(cursor.getColumnIndex(COURSE_DATE))),
+                        cursor.getInt(cursor.getColumnIndex(COURSE_DUREE)),
+                        cursor.getDouble(cursor.getColumnIndex(COURSE_DISTANCE)),
+                        cursor.getDouble(cursor.getColumnIndex(COURSE_VITESSE)),
+                        cursor.getInt(cursor.getColumnIndex(COURSE_CALORIES)),
+                        cursor.getInt(cursor.getColumnIndex(COURSE_PAS)));
+                courses.add(course);
+            } while (cursor.moveToNext());
+        }
+
+        return courses;
+    }
 }
