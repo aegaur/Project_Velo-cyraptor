@@ -3,6 +3,7 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -352,4 +353,42 @@ public class DbHelper extends SQLiteOpenHelper {
 
         return courses;
     }
+
+    public void viderHistorique(TypeCourse typeCourse) {
+        getWritableDatabase().delete(TABLE_COURSE, COURSE_TYPE + " = ?", new String[]{typeCourse.name()});
+    }
+
+    public void ajouterTrajet(Trajet trajet) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues nouveauTrajet = new ContentValues();
+        nouveauTrajet.put(TRAJET_DISTANCE, trajet.getDistance());
+        nouveauTrajet.put(TRAJET_MEILLEUR_TEMPS, trajet.getMeilleurTemps());
+        nouveauTrajet.put(TRAJET_NOM, trajet.getNom());
+
+        trajet.setId(db.insert(TABLE_TRAJET, null, nouveauTrajet));
+
+        ajouterTousPoints(db, trajet.getId(), trajet.getListePoints());
+    }
+
+    private void ajouterTousPoints(SQLiteDatabase db, long id, LinkedList<PointCourse> listePoints) {
+        ContentValues nouveauPoint = new ContentValues();
+
+        try {
+            db.beginTransaction();
+            for (PointCourse pointCourse : listePoints) {
+                nouveauPoint.put(POINT_TRAJET_ID, id);
+                nouveauPoint.put(POINT_DISTANCE, pointCourse.getDistance());
+                nouveauPoint.put(POINT_LATITUDE, pointCourse.getLatitude());
+                nouveauPoint.put(POINT_LONGITUDE, pointCourse.getLongitude());
+
+                db.insert(TABLE_POINT, null, nouveauPoint);
+            }
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+        } finally {
+            db.endTransaction();
+        }
+    }
+
 }

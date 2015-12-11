@@ -1,18 +1,19 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  * Created by gabriel on 2015-12-09.
  */
-public class Trajet {
-    private int id;
+public class Trajet implements Serializable {
+    private long id;
     private String nom;
     private double distance;
-    private int meilleurTemps;
+    private long meilleurTemps;
     private LinkedList<PointCourse> listePoints;
 
-    public Trajet(int id, String nom, double distance, int meilleurTemps, LinkedList<PointCourse> listePoints) {
+    public Trajet(int id, String nom, double distance, long meilleurTemps, LinkedList<PointCourse> listePoints) {
         this.id = id;
         this.nom = nom;
         this.distance = distance;
@@ -20,17 +21,18 @@ public class Trajet {
         this.listePoints = listePoints;
     }
 
-    public Trajet(String nom, double distance, int meilleurTemps) {
+    public Trajet(String nom, double distance, long meilleurTemps, LinkedList<PointCourse> listePoints) {
         this.nom = nom;
         this.distance = distance;
         this.meilleurTemps = meilleurTemps;
+        this.listePoints = listePoints;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -50,11 +52,11 @@ public class Trajet {
         this.distance = distance;
     }
 
-    public int getMeilleurTemps() {
+    public long getMeilleurTemps() {
         return meilleurTemps;
     }
 
-    public void setMeilleurTemps(int meilleurTemps) {
+    public void setMeilleurTemps(long meilleurTemps) {
         this.meilleurTemps = meilleurTemps;
     }
 

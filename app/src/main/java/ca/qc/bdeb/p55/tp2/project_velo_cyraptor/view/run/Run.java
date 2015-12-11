@@ -53,8 +53,8 @@ public class Run extends AppCompatActivity
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(Run_Run_Fragment.newInstance(true), getString(R.string.activity_run_section_title));
-        adapter.addFragment(Run_Run_Fragment.newInstance(false), getString(R.string.activity_bike_section_title));
+        adapter.addFragment(RunFragment.newInstance(true), getString(R.string.activity_run_section_title));
+        adapter.addFragment(RunFragment.newInstance(false), getString(R.string.activity_bike_section_title));
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

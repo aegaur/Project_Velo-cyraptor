@@ -46,8 +46,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
                     mListener.onListFragmentInteraction(holder.course);
                 }
             }
@@ -76,7 +74,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             lblDistance = (TextView) view.findViewById(R.id.fragment_course_distance);
         }
 
-        public void setValues(Course course){
+        public void setValues(Course course) {
             this.course = course;
             lblDate.setText(this.course.getDATE().toString());
             lblTrajet.setText(this.course.getTrajet() != null ? this.course.getTrajet().getNom() : context.getResources().getString(R.string.activity_run_path_selection_none));

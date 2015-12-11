@@ -16,10 +16,8 @@ import android.widget.*;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.*;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance.DbHelper;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CallbackMap;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CustomChronometer;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
@@ -29,15 +27,16 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Run_Run_Fragment#newInstance} factory method to
+ * Use the {@link RunFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Run_Run_Fragment extends Fragment implements CallbackMap {
+public class RunFragment extends Fragment implements CallbackMap {
     private static final String CLEE_ARGUMENT_RUNNING = "running";
     private static final double MULTIPLICATEUR_POIDS_CALORIES = 0.72;
     private static final double MULTIPLICATEUR_CONVERTION_KM_TO_MILES = 0.62137;
     private static final double DIVIDANTE_CONVERTION_DISTANCE_VELO = 5.63;
     private static final double DIVIDANTE_CONVERTION_DISTANCE_COURSE = 1;
+    private static final int NOMBRE_METRES_DANS_KILOMETRE = 1000;
 
     private Course course;
     private Podometre podometre;
@@ -61,24 +60,24 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     private TextView lblSpeed;
     private TextView lblSteps;
     private ProgressBar pgsProgresTrajet;
+    private int indiceTrajetChoisi = 0;
     private Trajet trajet;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @@return A new instance of fragment Run_Run_Fragment.
+     * @@return A new instance of fragment RunFragment.
      */
-    public static Run_Run_Fragment newInstance(boolean running) {
-        Run_Run_Fragment fragment = new Run_Run_Fragment();
+    public static RunFragment newInstance(boolean running) {
+        RunFragment fragment = new RunFragment();
         Bundle args = new Bundle();
         args.putBoolean(CLEE_ARGUMENT_RUNNING, running);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public Run_Run_Fragment() {
-        // Required empty public constructor
+    public RunFragment() {
     }
 
     @Override
@@ -180,21 +179,25 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
                 arrayAdapter.add(trajet.getNom());
             }
 
-            constructeurDialog.setNegativeButton(R.string.activity_run_path_selection_cancel,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            constructeurDialog.setAdapter(
-                    arrayAdapter,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            trajet = --which >= 0 ? trajet = listeTrajets.get(which) : null;
-                        }
-                    });
+            constructeurDialog.setNegativeButton(R.string.activity_run_path_selection_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            constructeurDialog.setPositiveButton(getString(R.string.activity_run_path_selection_positive), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    trajet = --indiceTrajetChoisi >= 0 ? trajet = listeTrajets.get(indiceTrajetChoisi) : null;
+                    refreshAffichageTrajet();
+                }
+            });
+            constructeurDialog.setSingleChoiceItems(arrayAdapter, indiceTrajetChoisi, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    indiceTrajetChoisi = i;
+                }
+            });
             constructeurDialog.show();
         } else {
             constructeurDialog.setMessage(R.string.activity_run_path_selection_no_path);
@@ -207,6 +210,24 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
                         }
                     });
             constructeurDialog.show();
+            trajet = null;
+            refreshAffichageTrajet();
+        }
+    }
+
+    private void refreshAffichageTrajet() {
+        if (trajet == null) {
+            btnPath.setText(getString(R.string.activity_run_btn_path));
+            pgsProgresTrajet.setVisibility(View.INVISIBLE);
+            Toast.makeText(getContext(), "trajetNull", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), "trajetNonNull", Toast.LENGTH_LONG).show();
+            btnPath.setText(String.format(getString(R.string.activity_run_btn_path_name), trajet.getNom()));
+            pgsProgresTrajet.setVisibility(View.VISIBLE);
+            gestionnaireMap.setPointsTrajet(trajet.getListePoints());
+            pgsProgresTrajet.setProgress(0);
+            pgsProgresTrajet.setSecondaryProgress(0);
+            pgsProgresTrajet.setMax(convertirEnMetres(trajet.getDistance()));
         }
     }
 
@@ -216,8 +237,9 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
             podometre.start();
             gestionnaireMap.start();
             toggleLayouts(EtatLayoutsRun.PAUSE);
-            course = new Course(running ? TypeCourse.A_PIED: TypeCourse.A_VELO);
+            course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO);
             gestionnaireMap.start();
+            btnPath.setEnabled(false);
         }
     }
 
@@ -262,12 +284,37 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
         toggleLayouts(EtatLayoutsRun.START);
         resetInfos();
         dbHelper.insertCourse(course);
-        gererTrajet();
+        gererFinTrajet();
+        btnPath.setEnabled(true);
     }
 
-    private void gererTrajet() {
-
+    private void gererFinTrajet() {
+        if (this.trajet == null) {
+            confirmerCreationNouveauTrajet();
+        }
         this.trajet = null;
+    }
+
+    private void confirmerCreationNouveauTrajet() {
+        final EditText input = new EditText(getContext());
+        new AlertDialog.Builder(getContext())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.activity_run_path_creation_title)
+                .setMessage(R.string.activity_run_path_creation_message)
+                .setPositiveButton(R.string.activity_run_path_creation_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        creerNouveauTrajer(input.getText().toString());
+                    }
+                })
+                .setNegativeButton(R.string.activity_run_path_creation_no, null)
+                .setView(input)
+                .show();
+    }
+
+    private void creerNouveauTrajer(String nomTrajet) {
+        dbHelper.ajouterTrajet(new Trajet(nomTrajet, gestionnaireMap.getDistanceTotale(),
+                chronoTime.getElapsedTimeInMillis(), gestionnaireMap.getListePoints()));
     }
 
     private void resume() {
@@ -309,8 +356,6 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -332,6 +377,14 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
         updateVitesse();
         updateCalories();
         updatePas();
+        updateProgress();
+    }
+
+    private void updateProgress() {
+        if (trajet != null) {
+            pgsProgresTrajet.setProgress(convertirEnMetres(course.getDistance()));
+            pgsProgresTrajet.setSecondaryProgress(convertirEnMetres(gestionnaireMap.getDistanceCouranteFantome()));
+        }
     }
 
     private void updatePas() {
@@ -374,5 +427,9 @@ public class Run_Run_Fragment extends Fragment implements CallbackMap {
     @Override
     public void callbackMap() {
         updateInfos();
+    }
+
+    private int convertirEnMetres(double distanceEnKm) {
+        return (int) Math.round(distanceEnKm * NOMBRE_METRES_DANS_KILOMETRE);
     }
 }

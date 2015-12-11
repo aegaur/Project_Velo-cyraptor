@@ -267,18 +267,19 @@
             <Space
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1.5"/>
 
             <ProgressBar
                     android:id="@+id/activity_run_pgs_progres_trajet"
                     android:layout_width="match_parent"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="0.5"
                     android:max="100"
                     android:progress="25"
                     android:secondaryProgress="50"
-                    android:visibility="visible"/>
+                    android:visibility="visible" android:progressDrawable="@drawable/drawable_progress_green_gray"
+                    />
 
             <Space
                     android:layout_width="match_parent"

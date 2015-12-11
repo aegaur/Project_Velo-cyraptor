@@ -1,10 +1,12 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model;
 
 
+import java.io.Serializable;
+
 /**
  * Created by gabriel on 2015-11-27.
  */
-public class Course {
+public class Course implements Serializable {
 
     private int id;
     private Trajet trajet;

@@ -8,18 +8,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.CallbackMap;
 
 /**
  * Created by gabriel on 2015-12-02.
@@ -31,6 +27,8 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private static final int NOMBRE_RESULTATS = 3;
     private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
     private static final int INDICE_RESULTAT = 0;
+    private static final int PADDING_CENTER_ALL_POINTS = 50;
+    private static final double CIRCLE_RADIUS = 10;
 
     private LinkedList<PointCourse> listePoints = new LinkedList<>();
     private boolean onMapAnimationFinished = false;
@@ -41,6 +39,12 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private Context context;
     private CallbackMap callbackMap;
     private double distanceTotale;
+    private int compteurSecondes = 0;
+    private double distanceCouranteFantome;
+    private LinkedList<PointCourse> pointsTrajet;
+    private int indicePointCourantFantome = 0;
+    private Polyline polylineGhost;
+    private Circle ghostCircle;
 
     public GestionnaireMap(Context context, CallbackMap callbackMap) {
         this.context = context;
@@ -56,26 +60,37 @@ public class GestionnaireMap implements OnMapReadyCallback {
         uiSettings.setMyLocationButtonEnabled(false);
 
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            private int compteurSecondes = 0;
-
             @Override
             public void onMyLocationChange(Location location) {
-                LatLng myLatLng;
-                if (firstTime) {
-                    firstTime = false;
-                    myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
-                } else if (onMapAnimationFinished && compteurSecondes
-                        >= INTERVALLE_SAUVEGARDE_MOUVEMENT && isRunning) {
-                    myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
-                    compteurSecondes = 0;
-                    updatePath(myLatLng);
-                    callbackMap.callbackMap();
-                }
-                compteurSecondes++;
+                savePoint(location);
             }
         });
+    }
+
+    private void savePoint(Location location) {
+        LatLng myLatLng;
+        if (firstTime) {
+            firstTime = false;
+            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
+        } else if (onMapAnimationFinished && compteurSecondes
+                >= INTERVALLE_SAUVEGARDE_MOUVEMENT && isRunning) {
+            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
+            compteurSecondes = 0;
+            updatePath(myLatLng);
+            updateGhost();
+            callbackMap.callbackMap();
+        }
+        compteurSecondes++;
+    }
+
+    private void updateGhost() {
+        if (pointsTrajet.size() < ++indicePointCourantFantome) {
+            PointCourse pointCourant = pointsTrajet.get(indicePointCourantFantome);
+            ghostCircle.setCenter(pointCourant.getLatLng());
+            distanceCouranteFantome = pointCourant.getDistance();
+        }
     }
 
     private void animerCameraMap(CameraUpdate cameraUpdate) {
@@ -114,6 +129,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
 
     void stop() {
         isRunning = false;
+        savePoint(map.getMyLocation());
         listePoints.clear();
         polyline.remove();
     }
@@ -129,8 +145,8 @@ public class GestionnaireMap implements OnMapReadyCallback {
     double getDistanceTotale() {
         return distanceTotale;
     }
-    
-    private void updateDistanceTotale(){
+
+    private void updateDistanceTotale() {
         float[] results = new float[NOMBRE_RESULTATS];
         float resultat = 0.0f;
 
@@ -150,5 +166,40 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private float calculerDistance(LatLng latLng1, LatLng latLng2, float[] results) {
         Location.distanceBetween(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude, results);
         return results[INDICE_RESULTAT] / NOMBRE_DE_METRES_PAR_KM;
+    }
+
+    public LinkedList<PointCourse> getListePoints() {
+        return listePoints;
+    }
+
+    public void setPointsTrajet(LinkedList<PointCourse> pointsTrajet) {
+        this.pointsTrajet = pointsTrajet;
+        indicePointCourantFantome = 0;
+        distanceCouranteFantome = 0;
+        polylineGhost = map.addPolyline(new PolylineOptions().width(LARGEUR_LIGNE)
+                .color(context.getResources().getColor(R.color.colorGhost)));
+        List<LatLng> listeLatLng = polylineGhost.getPoints();
+        for (PointCourse pointCourse : this.pointsTrajet) {
+            listeLatLng.add(pointCourse.getLatLng());
+        }
+        polylineGhost.setPoints(listeLatLng);
+        centerOnGhostPoints();
+        if (ghostCircle != null) {
+            ghostCircle.remove();
+        }
+        ghostCircle = map.addCircle(new CircleOptions().center(pointsTrajet.get(indicePointCourantFantome).getLatLng())
+                .fillColor(R.color.colorGhost).radius(CIRCLE_RADIUS));
+    }
+
+    private void centerOnGhostPoints() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : polylineGhost.getPoints()) {
+            builder.include(latLng);
+        }
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING_CENTER_ALL_POINTS));
+    }
+
+    public double getDistanceCouranteFantome() {
+        return distanceCouranteFantome;
     }
 }

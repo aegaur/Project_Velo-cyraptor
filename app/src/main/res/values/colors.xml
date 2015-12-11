@@ -5,4 +5,5 @@
     <color name="colorPrimary">@color/apptheme_color</color>
     <color name="colorPrimaryDark">#66b418</color>
     <color name="colorAccent">@color/apptheme_color</color>
+    <color name="colorGhost">#666666</color>
 </resources>

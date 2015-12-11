@@ -13,7 +13,7 @@
         android:text="Date"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true" android:textSize="24dp"/>
 
     <TextView
         android:id="@+id/fragment_course_trajet"
@@ -42,8 +42,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
         android:text="Distance"
-        android:layout_below="@+id/fragment_course_temps"
-        android:layout_alignLeft="@+id/fragment_course_temps"
-        android:layout_alignStart="@+id/fragment_course_temps"
-        android:layout_marginTop="@dimen/abc_action_bar_overflow_padding_start_material" />
+        android:layout_alignTop="@+id/fragment_course_trajet"
+        android:layout_alignLeft="@+id/fragment_course_temps" android:layout_alignStart="@+id/fragment_course_temps"/>
 </RelativeLayout>
