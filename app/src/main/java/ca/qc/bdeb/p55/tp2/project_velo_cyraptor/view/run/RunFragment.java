@@ -219,9 +219,7 @@ public class RunFragment extends Fragment implements CallbackMap {
         if (trajet == null) {
             btnPath.setText(getString(R.string.activity_run_btn_path));
             pgsProgresTrajet.setVisibility(View.INVISIBLE);
-            Toast.makeText(getContext(), "trajetNull", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getContext(), "trajetNonNull", Toast.LENGTH_LONG).show();
             btnPath.setText(String.format(getString(R.string.activity_run_btn_path_name), trajet.getNom()));
             pgsProgresTrajet.setVisibility(View.VISIBLE);
             gestionnaireMap.setPointsTrajet(trajet.getListePoints());
@@ -278,19 +276,25 @@ public class RunFragment extends Fragment implements CallbackMap {
 
     private void stop() {
         course.setDuree(chronoTime.getElapsedTimeInMillis());
+        gererFinTrajet();
+        refreshAffichageTrajet();
+    }
+
+    private void reinitialiserActivity() {
         chronoTime.reset();
         podometre.stop();
         gestionnaireMap.stop();
         toggleLayouts(EtatLayoutsRun.START);
         resetInfos();
         dbHelper.insertCourse(course);
-        gererFinTrajet();
         btnPath.setEnabled(true);
     }
 
     private void gererFinTrajet() {
         if (this.trajet == null) {
             confirmerCreationNouveauTrajet();
+        } else {
+            reinitialiserActivity();
         }
         this.trajet = null;
     }
@@ -305,9 +309,15 @@ public class RunFragment extends Fragment implements CallbackMap {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         creerNouveauTrajer(input.getText().toString());
+                        reinitialiserActivity();
                     }
                 })
-                .setNegativeButton(R.string.activity_run_path_creation_no, null)
+                .setNegativeButton(R.string.activity_run_path_creation_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        reinitialiserActivity();
+                    }
+                })
                 .setView(input)
                 .show();
     }

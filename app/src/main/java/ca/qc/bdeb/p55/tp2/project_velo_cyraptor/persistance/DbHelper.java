@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.util.Log;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Date;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;

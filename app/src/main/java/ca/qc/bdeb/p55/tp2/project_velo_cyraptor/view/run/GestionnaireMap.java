@@ -10,6 +10,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -28,7 +29,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
     private static final int INDICE_RESULTAT = 0;
     private static final int PADDING_CENTER_ALL_POINTS = 50;
-    private static final double CIRCLE_RADIUS = 10;
+    private static final double CIRCLE_RADIUS = 18;
 
     private LinkedList<PointCourse> listePoints = new LinkedList<>();
     private boolean onMapAnimationFinished = false;
@@ -39,7 +40,6 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private Context context;
     private CallbackMap callbackMap;
     private double distanceTotale;
-    private int compteurSecondes = 0;
     private double distanceCouranteFantome;
     private LinkedList<PointCourse> pointsTrajet;
     private int indicePointCourantFantome = 0;
@@ -73,20 +73,17 @@ public class GestionnaireMap implements OnMapReadyCallback {
             firstTime = false;
             myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
-        } else if (onMapAnimationFinished && compteurSecondes
-                >= INTERVALLE_SAUVEGARDE_MOUVEMENT && isRunning) {
+        } else if (onMapAnimationFinished  && isRunning) {
             myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
-            compteurSecondes = 0;
             updatePath(myLatLng);
             updateGhost();
             callbackMap.callbackMap();
         }
-        compteurSecondes++;
     }
 
     private void updateGhost() {
-        if (pointsTrajet.size() < ++indicePointCourantFantome) {
+        if (pointsTrajet != null && ++indicePointCourantFantome < pointsTrajet.size()) {
             PointCourse pointCourant = pointsTrajet.get(indicePointCourantFantome);
             ghostCircle.setCenter(pointCourant.getLatLng());
             distanceCouranteFantome = pointCourant.getDistance();
@@ -132,6 +129,8 @@ public class GestionnaireMap implements OnMapReadyCallback {
         savePoint(map.getMyLocation());
         listePoints.clear();
         polyline.remove();
+        polylineGhost.remove();
+        ghostCircle.remove();
     }
 
     void updatePath(LatLng position) {
@@ -178,7 +177,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
         distanceCouranteFantome = 0;
         polylineGhost = map.addPolyline(new PolylineOptions().width(LARGEUR_LIGNE)
                 .color(context.getResources().getColor(R.color.colorGhost)));
-        List<LatLng> listeLatLng = polylineGhost.getPoints();
+        List<LatLng> listeLatLng = new ArrayList<>();
         for (PointCourse pointCourse : this.pointsTrajet) {
             listeLatLng.add(pointCourse.getLatLng());
         }
@@ -188,7 +187,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
             ghostCircle.remove();
         }
         ghostCircle = map.addCircle(new CircleOptions().center(pointsTrajet.get(indicePointCourantFantome).getLatLng())
-                .fillColor(R.color.colorGhost).radius(CIRCLE_RADIUS));
+                .fillColor(R.color.colorGhost).radius(CIRCLE_RADIUS).strokeWidth(1).strokeColor(R.color.colorAccent));
     }
 
     private void centerOnGhostPoints() {
