@@ -229,12 +229,16 @@ public class RunFragment extends Fragment implements CallbackMap {
 
     private void start() {
         if (checkGpsEnabled()) {
-            chronoTime.start();
-            podometre.start();
-            gestionnaireMap.start();
-            course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO, course.getTrajet());
-            toggleLayouts(EtatLayoutsRun.PAUSE);
-            btnPath.setEnabled(false);
+            if (gestionnaireMap.isReady()) {
+                chronoTime.start();
+                podometre.start();
+                gestionnaireMap.start();
+                course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO, course.getTrajet());
+                toggleLayouts(EtatLayoutsRun.PAUSE);
+                btnPath.setEnabled(false);
+            } else {
+                Toast.makeText(getContext(), R.string.activity_run_toast_location_not_ready, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
