@@ -41,7 +41,7 @@
                         android:layout_weight="0.4"
                         android:text="@string/activity_run_btn_start"
                         android:textColor="@android:color/white"
-                        android:background="@color/apptheme_color"/>
+                        android:background="@color/colorAccent"/>
 
                 <Space
                         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                         android:layout_weight="0.8"
                         android:text="@string/activity_run_btn_stop"
                         android:textColor="@android:color/white"
-                        android:background="@color/apptheme_color"
+                        android:background="@color/colorAccent"
                         android:layout_marginRight="@dimen/abc_action_bar_overflow_padding_start_material"/>
 
                 <Button
@@ -81,7 +81,7 @@
                         android:layout_weight="0.8"
                         android:text="@string/activity_run_btn_resume"
                         android:textColor="@android:color/white"
-                        android:background="@color/apptheme_color"
+                        android:background="@color/colorAccent"
                         android:layout_marginLeft="@dimen/abc_action_bar_overflow_padding_start_material"/>
 
                 <Space
@@ -256,7 +256,7 @@
                         android:layout_weight="0.4"
                         android:text="@string/activity_run_btn_path"
                         android:textColor="@android:color/white"
-                        android:background="@color/apptheme_color"/>
+                        android:background="@color/colorAccent"/>
 
                 <Space
                         android:layout_width="match_parent"
@@ -278,13 +278,15 @@
                     android:max="100"
                     android:progress="25"
                     android:secondaryProgress="50"
-                    android:visibility="visible" android:progressDrawable="@drawable/drawable_progress_green_gray"
+                    android:visibility="invisible"
+                    android:progressDrawable="@drawable/drawable_progress_green_gray"
                     />
 
             <Space
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"/>
+
         </LinearLayout>
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"

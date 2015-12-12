@@ -51,6 +51,11 @@ public class Course implements Serializable {
         this.calories = calories;
     }
 
+    public Course(TypeCourse typeCourse, Trajet trajet) {
+        this(typeCourse);
+        this.trajet = trajet;
+    }
+
     public int getId() {
         return id;
     }

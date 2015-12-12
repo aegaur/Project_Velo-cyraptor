@@ -5,23 +5,23 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model;
  */
 public class Profil {
 
-    private double poidsLbs;
+    private int poidsLbs;
     private Sexe sexe;
-    private double tailleCm;
+    private int tailleCm;
     private int age;
 
-    public Profil(double poidsLbs, Sexe sexe, double tailleCm, int age) {
+    public Profil(int poidsLbs, Sexe sexe, int tailleCm, int age) {
         this.poidsLbs = poidsLbs;
         this.sexe = sexe;
         this.tailleCm = tailleCm;
         this.age = age;
     }
 
-    public double getPoidsLbs() {
+    public int getPoidsLbs() {
         return poidsLbs;
     }
 
-    public void setPoidsLbs(double poidsLbs) {
+    public void setPoidsLbs(int poidsLbs) {
         this.poidsLbs = poidsLbs;
     }
 
@@ -33,11 +33,11 @@ public class Profil {
         this.sexe = sexe;
     }
 
-    public double getTailleCm() {
+    public int getTailleCm() {
         return tailleCm;
     }
 
-    public void setTailleCm(double tailleCm) {
+    public void setTailleCm(int tailleCm) {
         this.tailleCm = tailleCm;
     }
 

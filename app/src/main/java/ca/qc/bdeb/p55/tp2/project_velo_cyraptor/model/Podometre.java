@@ -38,7 +38,7 @@ public class Podometre implements SensorEventListener {
         }
 
         if (sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            Log.d("PédophileMeter", "Step Counter Detected : " + value);
+            Log.d("PédophileMeter", "Type Step Detected : " + value);
         } else if (sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             // For test only. Only allowed value is 1.0 i.e. for step taken
             Log.d("PédophileMeter", "Step Detector Detected : " + value);
@@ -47,7 +47,6 @@ public class Podometre implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     public void start() {

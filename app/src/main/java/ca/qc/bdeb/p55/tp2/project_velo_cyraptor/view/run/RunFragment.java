@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +63,6 @@ public class RunFragment extends Fragment implements CallbackMap {
     private TextView lblSteps;
     private ProgressBar pgsProgresTrajet;
     private int indiceTrajetChoisi = 0;
-    private Trajet trajet;
 
     /**
      * Use this factory method to create a new instance of
@@ -87,9 +88,9 @@ public class RunFragment extends Fragment implements CallbackMap {
         podometre = new Podometre(getContext());
         gestionnaireMap = new GestionnaireMap(getContext(), this);
         this.running = getArguments().getBoolean(CLEE_ARGUMENT_RUNNING);
-        this.androidKitKatOrHigher = true;
+        this.course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO);
+        this.androidKitKatOrHigher = getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER);
         this.profil = dbHelper.getProfil();
-        this.trajet = null;
     }
 
     @Override
@@ -166,7 +167,7 @@ public class RunFragment extends Fragment implements CallbackMap {
 
     private void choisirTrajet() {
         final ArrayList<Trajet> listeTrajets = dbHelper.getTousTrajets();
-        AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(getContext());
+        final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(getContext());
 
         if (listeTrajets.size() > 0) {
             constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
@@ -188,7 +189,7 @@ public class RunFragment extends Fragment implements CallbackMap {
             constructeurDialog.setPositiveButton(getString(R.string.activity_run_path_selection_positive), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    trajet = --indiceTrajetChoisi >= 0 ? trajet = listeTrajets.get(indiceTrajetChoisi) : null;
+                    course.setTrajet(indiceTrajetChoisi - 1 >= 0 ? listeTrajets.get(indiceTrajetChoisi - 1) : null);
                     refreshAffichageTrajet();
                 }
             });
@@ -210,12 +211,13 @@ public class RunFragment extends Fragment implements CallbackMap {
                         }
                     });
             constructeurDialog.show();
-            trajet = null;
+            this.course.setTrajet(null);
             refreshAffichageTrajet();
         }
     }
 
     private void refreshAffichageTrajet() {
+        Trajet trajet = course.getTrajet();
         if (trajet == null) {
             btnPath.setText(getString(R.string.activity_run_btn_path));
             pgsProgresTrajet.setVisibility(View.INVISIBLE);
@@ -234,9 +236,8 @@ public class RunFragment extends Fragment implements CallbackMap {
             chronoTime.start();
             podometre.start();
             gestionnaireMap.start();
+            course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO, course.getTrajet());
             toggleLayouts(EtatLayoutsRun.PAUSE);
-            course = new Course(running ? TypeCourse.A_PIED : TypeCourse.A_VELO);
-            gestionnaireMap.start();
             btnPath.setEnabled(false);
         }
     }
@@ -263,7 +264,6 @@ public class RunFragment extends Fragment implements CallbackMap {
                                 }
                             }).show();
         }
-
         return gpsIsEnabled;
     }
 
@@ -280,27 +280,17 @@ public class RunFragment extends Fragment implements CallbackMap {
         refreshAffichageTrajet();
     }
 
-    private void reinitialiserActivity() {
-        chronoTime.reset();
-        podometre.stop();
-        gestionnaireMap.stop();
-        toggleLayouts(EtatLayoutsRun.START);
-        resetInfos();
-        dbHelper.insertCourse(course);
-        btnPath.setEnabled(true);
-    }
-
     private void gererFinTrajet() {
-        if (this.trajet == null) {
+        if (this.course.getTrajet() == null) {
             confirmerCreationNouveauTrajet();
         } else {
             reinitialiserActivity();
         }
-        this.trajet = null;
     }
 
     private void confirmerCreationNouveauTrajet() {
         final EditText input = new EditText(getContext());
+        input.setHint(R.string.activity_run_path_creation_placeholder);
         new AlertDialog.Builder(getContext())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.activity_run_path_creation_title)
@@ -320,6 +310,17 @@ public class RunFragment extends Fragment implements CallbackMap {
                 })
                 .setView(input)
                 .show();
+    }
+
+    private void reinitialiserActivity() {
+        chronoTime.reset();
+        podometre.stop();
+        gestionnaireMap.stop();
+        toggleLayouts(EtatLayoutsRun.START);
+        dbHelper.insertCourse(course);
+        btnPath.setEnabled(true);
+        this.course.setTrajet(null);
+        resetInfos();
     }
 
     private void creerNouveauTrajer(String nomTrajet) {
@@ -391,7 +392,7 @@ public class RunFragment extends Fragment implements CallbackMap {
     }
 
     private void updateProgress() {
-        if (trajet != null) {
+        if (course.getTrajet() != null) {
             pgsProgresTrajet.setProgress(convertirEnMetres(course.getDistance()));
             pgsProgresTrajet.setSecondaryProgress(convertirEnMetres(gestionnaireMap.getDistanceCouranteFantome()));
         }
@@ -418,9 +419,12 @@ public class RunFragment extends Fragment implements CallbackMap {
     }
 
     private void updateVitesse() {
-        double vitesse;
+        double vitesse = 0;
 
-        vitesse = course.getDistance() / chronoTime.getElapsedTimeInHours();
+        double elapsedTimeInHours = chronoTime.getElapsedTimeInHours();
+        if (elapsedTimeInHours > 0.0) {
+            vitesse = course.getDistance() / elapsedTimeInHours;
+        }
 
         this.course.setVitesse(vitesse);
         String vitesseStr = String.format(getResources().getString(R.string.activity_run_lbl_vitesse_valeur), vitesse);

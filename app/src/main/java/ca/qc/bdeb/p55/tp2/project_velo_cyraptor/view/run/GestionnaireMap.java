@@ -73,7 +73,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
             firstTime = false;
             myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             animerCameraMap(CameraUpdateFactory.newLatLngZoom(myLatLng, ZOOM_INITIAL));
-        } else if (onMapAnimationFinished  && isRunning) {
+        } else if (onMapAnimationFinished && isRunning) {
             myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             animerCameraMap(CameraUpdateFactory.newLatLng(myLatLng));
             updatePath(myLatLng);
@@ -129,8 +129,12 @@ public class GestionnaireMap implements OnMapReadyCallback {
         savePoint(map.getMyLocation());
         listePoints.clear();
         polyline.remove();
-        polylineGhost.remove();
-        ghostCircle.remove();
+        if (polylineGhost != null) {
+            polylineGhost.remove();
+        }
+        if (ghostCircle != null) {
+            ghostCircle.remove();
+        }
     }
 
     void updatePath(LatLng position) {

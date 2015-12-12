@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.history.History;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile.Profile;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.ViewPagerAdapter;
 
@@ -120,15 +121,14 @@ public class Run extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
         if (id == R.id.nav_profil) {
-
+            Intent intent = new Intent(this, Profile.class);
+            startActivity(intent);
         } else if (id == R.id.nav_stats) {
 
         } else if (id == R.id.nav_history) {

@@ -254,7 +254,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(trajetId)});
     }
 
-    private void updateProfil(Profil profil) {
+    public void updateProfil(Profil profil) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues profilPoids = new ContentValues();
@@ -338,8 +338,13 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
+                Log.d("IdTrajet", Integer.toString(cursor.getInt(cursor.getColumnIndex(COURSE_TRAJET_ID))));
+                Trajet trajet = getTrajetById(cursor.getInt(cursor.getColumnIndex(COURSE_TRAJET_ID)));
+                if (trajet != null) {
+                    Log.d("NomTrajet", trajet.getNom());
+                }
                 Course course = new Course(
-                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(COURSE_ID))),
+                        cursor.getInt(cursor.getColumnIndex(COURSE_ID)),
                         getTrajetById(cursor.getInt(cursor.getColumnIndex(COURSE_TRAJET_ID))),
                         TypeCourse.valueOf(cursor.getString(cursor.getColumnIndex(COURSE_TYPE))),
                         new Date(cursor.getString(cursor.getColumnIndex(COURSE_DATE))),

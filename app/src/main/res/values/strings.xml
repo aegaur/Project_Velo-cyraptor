@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Project_velo_cyraptor</string>
 
+    <string name="title_activity_profile">Profile</string>
     <string name="title_activity_history">History</string>
     <string name="title_activity_course_details">Run Detail</string>
     <string name="activity_bike_section_title">Bike</string>
@@ -49,6 +50,12 @@
     <string name="activity_history_confirm_message">Are you sure you want to clear the entire history of this running type?</string>
     <string name="menu_history_clear">Clear history</string>
 
+    <string name="activity_profile_lbl_invite_age">Age :</string>
+    <string name="activity_profile_lbl_invite_poids">Weight (kilograms):</string>
+    <string name="activity_profile_lbl_invite_taille">Height (centimeters):</string>
+    <string name="activity_profile_lbl_invite_sexe">Sex :</string>
+    <string name="activity_profile_btn_save">Save changes</string>
+
     <string name="fragment_course_unite_temps">minutes</string>
 
     <string name="content_course_lbl_date_defaut">00/00/2000</string>
@@ -70,4 +77,8 @@
     <string name="nav_stats">Statistics</string>
     <string name="nav_profil">Profile</string>
     <string name="activity_run_path_selection_positive">Select</string>
+
+    <string name="activity_profile_spn_sexe_indetermine">Undetermined</string>
+    <string name="activity_profile_spn_sexe_masculin">Male</string>
+    <string name="activity_profile_spn_sexe_feminin">Female</string>
 </resources>

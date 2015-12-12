@@ -7,17 +7,23 @@ import android.view.View;
 import android.widget.TextView;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
 
-public class CourseDetails extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapLoadedCallback {
 
     private static final String CLEE_COURSE = "course";
     private static final int NOMBRE_MILLI_DANS_SEC = 1000;
     private static final int NOMBRE_SECONDES_DANS_MIN = 60;
+    private static final float LARGEUR_LIGNE = 7.5f;
+    private static final int PADDING_CENTER_ALL_POINTS = 50;
 
     private Course course;
     private TextView lblCalories;
@@ -99,6 +105,25 @@ public class CourseDetails extends AppCompatActivity {
     }
 
     private void setUpMap() {
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        if (course.getTrajet() != null) {
+            map.getUiSettings().setAllGesturesEnabled(false);
+            map.setOnMapLoadedCallback(this);
+        }
+    }
+
+    @Override
+    public void onMapLoaded() {
+        LinkedList<PointCourse> listePoint = course.getTrajet().getListePoints();
+        LatLng[] tabLatLng = new LatLng[listePoint.size()];
+        for (int i = 0; i < listePoint.size(); i++) {
+            tabLatLng[i] = listePoint.get(i).getLatLng();
+        }
+        map.addPolyline(new PolylineOptions().width(LARGEUR_LIGNE).add(tabLatLng)
+                .color(this.getResources().getColor(R.color.colorGhost)));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : tabLatLng) {
+            builder.include(latLng);
+        }
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING_CENTER_ALL_POINTS));
     }
 }
