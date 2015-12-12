@@ -399,8 +399,10 @@ public class RunFragment extends Fragment implements CallbackMap {
     }
 
     private void updatePas() {
-        course.setPas(podometre.getNombrePas());
-        this.lblSteps.setText(Integer.toString(course.getPas()));
+        if(running && androidKitKatOrHigher){
+            course.setPas(podometre.getNombrePas());
+            this.lblSteps.setText(Integer.toString(course.getPas()));
+        }
     }
 
     private void updateCalories() {
