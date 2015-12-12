@@ -254,30 +254,33 @@ public class DbHelper extends SQLiteOpenHelper {
         db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(trajetId)});
     }
 
-    public void updateProfil(Profil profil) {
+    public boolean updateProfil(Profil profil) {
         SQLiteDatabase db = this.getWritableDatabase();
+        boolean success;
 
         ContentValues profilPoids = new ContentValues();
         profilPoids.put(PROFIL_KEY, PROFIL_KEY_POIDS);
         profilPoids.put(PROFIL_VALUE, profil.getPoidsLbs());
 
         ContentValues profilTaille = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_TAILLE);
-        profilPoids.put(PROFIL_VALUE, profil.getTailleCm());
+        profilTaille.put(PROFIL_KEY, PROFIL_KEY_TAILLE);
+        profilTaille.put(PROFIL_VALUE, profil.getTailleCm());
 
         ContentValues profilAge = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_AGE);
-        profilPoids.put(PROFIL_VALUE, profil.getAge());
+        profilAge.put(PROFIL_KEY, PROFIL_KEY_AGE);
+        profilAge.put(PROFIL_VALUE, profil.getAge());
 
         ContentValues profilSexe = new ContentValues();
-        profilPoids.put(PROFIL_KEY, PROFIL_KEY_SEXE);
-        profilPoids.put(PROFIL_VALUE, profil.getSexe().getINDEX());
+        profilSexe.put(PROFIL_KEY, PROFIL_KEY_SEXE);
+        profilSexe.put(PROFIL_VALUE, profil.getSexe().getINDEX());
 
         db.delete(TABLE_PROFIL, null, null);
-        db.insert(TABLE_PROFIL, null, profilPoids);
-        db.insert(TABLE_PROFIL, null, profilTaille);
-        db.insert(TABLE_PROFIL, null, profilAge);
-        db.insert(TABLE_PROFIL, null, profilSexe);
+        success = db.insert(TABLE_PROFIL, null, profilPoids) > 0;
+        success &= db.insert(TABLE_PROFIL, null, profilTaille) > 0;
+        success &= db.insert(TABLE_PROFIL, null, profilAge) > 0;
+        success &= db.insert(TABLE_PROFIL, null, profilSexe) > 0;
+
+        return success;
     }
 
     public ArrayList<Trajet> getTousTrajets() {

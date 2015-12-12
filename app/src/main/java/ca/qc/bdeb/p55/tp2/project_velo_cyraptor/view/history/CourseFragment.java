@@ -29,7 +29,7 @@ public class CourseFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
     private DbHelper dbHelper;
-    private List<Course> listeCourses;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -51,11 +51,10 @@ public class CourseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         dbHelper = DbHelper.getInstance(getContext());
 
-        if(getArguments() != null){
+        if (getArguments() != null) {
             typeCourse = (TypeCourse) getArguments().getSerializable(ARG_KEY);
         }
 
-        listeCourses = dbHelper.getTousCourses(typeCourse.name());
     }
 
     @Override
@@ -64,16 +63,19 @@ public class CourseFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
 
 
-
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setAdapter(new CourseAdapter(listeCourses, mListener, getContext()));
+            recyclerView = (RecyclerView) view;
+            chargerCourses();
         }
         return view;
     }
 
+    private void chargerCourses() {
+        List<Course> listeCourses = dbHelper.getTousCourses(typeCourse.name());
+        recyclerView.setAdapter(new CourseAdapter(listeCourses, mListener, getContext()));
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -92,4 +94,11 @@ public class CourseFragment extends Fragment {
         mListener = null;
     }
 
+    public TypeCourse getTypeCourse() {
+        return typeCourse;
+    }
+
+    public void refraichir() {
+        chargerCourses();
+    }
 }

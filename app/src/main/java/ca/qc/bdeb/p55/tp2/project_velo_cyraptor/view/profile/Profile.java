@@ -1,12 +1,10 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.*;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profil;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Sexe;
@@ -31,6 +29,9 @@ public class Profile extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.ic_action_person);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         dbHelper = DbHelper.getInstance(this);
         affecterViews();
         initSpinnerSexe();
@@ -52,7 +53,9 @@ public class Profile extends ActionBarActivity {
         this.profil.setTailleCm(Integer.parseInt(txtTaille.getText().toString()));
         this.profil.setPoidsLbs(kgEnLbs(Integer.parseInt(txtPoids.getText().toString())));
         this.profil.setSexe(Sexe.getSexeByIndex(this.spnSexe.getSelectedItemPosition()));
-        dbHelper.updateProfil(profil);
+        boolean success = dbHelper.updateProfil(profil);
+        Toast.makeText(this, success ? R.string.activity_profile_tst_save_success
+                : R.string.activity_profile_tst_save_failure, Toast.LENGTH_LONG).show();
     }
 
     private void affecterViews() {

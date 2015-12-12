@@ -20,8 +20,8 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile.Profile;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.ViewPagerAdapter;
 
-public class Run extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
+public class Run extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        OnFragmentInteractionListener {
 
     private static final int POSITION_TABULATION_RUN = 0;
     private TabLayout tabLayout;

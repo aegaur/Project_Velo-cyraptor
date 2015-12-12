@@ -95,6 +95,8 @@
             android:text="@string/activity_profile_btn_save"
             android:id="@+id/activity_profile_btn_save"
             android:layout_weight="1.05"
-            android:background="@color/colorAccent"/>
+            android:background="@color/colorAccent"
+            android:layout_margin="@dimen/abc_action_bar_icon_vertical_padding_material"
+            android:textColor="@android:color/white"/>
 
 </LinearLayout>

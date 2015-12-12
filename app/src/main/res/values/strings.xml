@@ -47,7 +47,9 @@
     <string name="activity_history_confirm_yes">Yes</string>
     <string name="activity_history_confirm_no">No</string>
     <string name="activity_history_confirm_title">Clear history</string>
-    <string name="activity_history_confirm_message">Are you sure you want to clear the entire history of this running type?</string>
+    <string name="activity_history_confirm_message">Are you sure you want to clear the entire history of this running
+        type?
+    </string>
     <string name="menu_history_clear">Clear history</string>
 
     <string name="activity_profile_lbl_invite_age">Age :</string>
@@ -81,4 +83,6 @@
     <string name="activity_profile_spn_sexe_indetermine">Undetermined</string>
     <string name="activity_profile_spn_sexe_masculin">Male</string>
     <string name="activity_profile_spn_sexe_feminin">Female</string>
+    <string name="activity_profile_tst_save_success">Saved successfully</string>
+    <string name="activity_profile_tst_save_failure">Saving failure</string>
 </resources>

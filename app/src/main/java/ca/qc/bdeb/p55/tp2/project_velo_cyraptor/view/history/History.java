@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,13 +23,15 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private DbHelper dbHelper;
+    private CourseFragment[] tabFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_history);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.ic_history);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -41,8 +44,11 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(CourseFragment.newInstance(TypeCourse.A_PIED), getString(R.string.activity_run_section_title));
-        adapter.addFragment(CourseFragment.newInstance(TypeCourse.A_VELO), getString(R.string.activity_bike_section_title));
+        tabFragments = new CourseFragment[TypeCourse.values().length];
+        tabFragments[0] = CourseFragment.newInstance(TypeCourse.A_PIED);
+        tabFragments[1] = CourseFragment.newInstance(TypeCourse.A_VELO);
+        adapter.addFragment(tabFragments[0], getString(R.string.activity_run_section_title));
+        adapter.addFragment(tabFragments[1], getString(R.string.activity_bike_section_title));
         viewPager.setAdapter(adapter);
     }
 
@@ -86,6 +92,8 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     }
 
     private void clearHistory() {
-        dbHelper.viderHistorique(tabLayout.getSelectedTabPosition() == 0 ? TypeCourse.A_PIED : TypeCourse.A_VELO);
+        CourseFragment courseFragment = tabFragments[tabLayout.getSelectedTabPosition()];
+        dbHelper.viderHistorique(courseFragment.getTypeCourse());
+        courseFragment.refraichir();
     }
 }
