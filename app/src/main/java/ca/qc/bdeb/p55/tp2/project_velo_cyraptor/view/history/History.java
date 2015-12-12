@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
@@ -24,14 +24,12 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private ViewPager viewPager;
     private DbHelper dbHelper;
     private CourseFragment[] tabFragments;
+    private int indiceSortChoisi = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setIcon(R.drawable.ic_history);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -65,9 +63,38 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         if (id == R.id.menu_history_clear) {
             confirmClearHistory();
             return true;
+        } else if (id == R.id.menu_history_sort) {
+            dialogSortHistory();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dialogSortHistory() {
+        final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(this);
+
+        constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add(getString(R.string.activity_run_path_selection_none));
+
+        for (HistorySorts historySorts : HistorySorts.values()) {
+            arrayAdapter.add(historySorts.name());
+        }
+        constructeurDialog.setSingleChoiceItems(arrayAdapter, indiceSortChoisi, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                indiceSortChoisi = i;
+                reloadFragments();
+            }
+        });
+        constructeurDialog.show();
+    }
+
+    private void reloadFragments() {
+        for (CourseFragment courseFragment : tabFragments) {
+            courseFragment.rearangerListe(HistorySorts.values()[indiceSortChoisi]);
+        }
     }
 
     @Override

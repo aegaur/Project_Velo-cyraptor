@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               app:layout_behavior="@string/appbar_scrolling_view_behavior"
-              tools:context=".view.run.Run"
+              tools:context="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics.Statistics"
               tools:showIn="@layout/run_app_bar_run"
               android:orientation="vertical">
 

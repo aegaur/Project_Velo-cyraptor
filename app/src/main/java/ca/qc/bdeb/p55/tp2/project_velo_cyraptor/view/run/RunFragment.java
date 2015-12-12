@@ -40,16 +40,17 @@ public class RunFragment extends Fragment implements CallbackMap {
     private static final double DIVIDANTE_CONVERTION_DISTANCE_COURSE = 1;
     private static final int NOMBRE_METRES_DANS_KILOMETRE = 1000;
 
+    private boolean running;
+    private boolean androidKitKatOrHigher;
+
     private Course course;
     private Podometre podometre;
     private GestionnaireMap gestionnaireMap;
     private DbHelper dbHelper;
-
-    private boolean running;
-    private boolean androidKitKatOrHigher;
     private Profil profil;
+    private int indiceTrajetChoisi = 0;
+
     private CustomChronometer chronoTime;
-    private OnFragmentInteractionListener mListener;
     private Button btnStart;
     private Button btnStop;
     private Button btnResume;
@@ -62,7 +63,6 @@ public class RunFragment extends Fragment implements CallbackMap {
     private TextView lblSpeed;
     private TextView lblSteps;
     private ProgressBar pgsProgresTrajet;
-    private int indiceTrajetChoisi = 0;
 
     /**
      * Use this factory method to create a new instance of
@@ -97,11 +97,9 @@ public class RunFragment extends Fragment implements CallbackMap {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.run_fragment_run_run, container, false);
-
         initialiserComposants(view);
         initialiserListeners();
         adapterView();
-
         return view;
     }
 
@@ -171,15 +169,13 @@ public class RunFragment extends Fragment implements CallbackMap {
 
         if (listeTrajets.size() > 0) {
             constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
-
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.select_dialog_singlechoice);
-
             arrayAdapter.add(getString(R.string.activity_run_path_selection_none));
+
             for (Trajet trajet : listeTrajets) {
                 arrayAdapter.add(trajet.getNom());
             }
-
             constructeurDialog.setNegativeButton(R.string.activity_run_path_selection_cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -320,6 +316,7 @@ public class RunFragment extends Fragment implements CallbackMap {
         dbHelper.insertCourse(course);
         btnPath.setEnabled(true);
         this.course.setTrajet(null);
+        indiceTrajetChoisi = 0;
         resetInfos();
     }
 
@@ -354,28 +351,6 @@ public class RunFragment extends Fragment implements CallbackMap {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     private void resetInfos() {
         this.lblDistance.setText(getResources().getString(R.string.activity_run_lbl_distance_defaut));
         this.lblSpeed.setText(getResources().getString(R.string.activity_run_lbl_vitesse_defaut));
@@ -399,7 +374,7 @@ public class RunFragment extends Fragment implements CallbackMap {
     }
 
     private void updatePas() {
-        if(running && androidKitKatOrHigher){
+        if (running && androidKitKatOrHigher) {
             course.setPas(podometre.getNombrePas());
             this.lblSteps.setText(Integer.toString(course.getPas()));
         }

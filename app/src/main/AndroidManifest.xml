@@ -50,7 +50,24 @@
         </activity>
         <activity
             android:name=".view.profile.Profile"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_profile"
+            android:parentActivityName=".view.run.Run" >
+        </activity>
+        <activity
+            android:name=".view.statistics.Statistics"
+            android:label="@string/title_activity_statistics"
+            android:parentActivityName=".view.run.Run" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run.Run" />
+        </activity>
+        <activity
+            android:name=".view.statistics.TrajetDetail"
+            android:label="@string/title_activity_trajet_detail"
+            android:parentActivityName=".view.statistics.Statistics" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics.Statistics" />
         </activity>
     </application>
 

@@ -5,7 +5,9 @@
     <string name="title_activity_history">History</string>
     <string name="title_activity_course_details">Run Detail</string>
     <string name="activity_bike_section_title">Bike</string>
+    <string name="activity_stats_path_section_title">Paths</string>
     <string name="activity_run_section_title">Run</string>
+    <string name="title_activity_trajet_detail">Path Detail</string>
 
     <string name="step_counter">android.hardware.sensor.stepcounter</string>
     <string name="step_detector">android.hardware.sensor.stepdetector</string>
@@ -43,6 +45,7 @@
     <string name="activity_run_path_creation_placeholder">Path name</string>
     <string name="activity_run_path_creation_yes">Yes</string>
     <string name="activity_run_path_creation_no">No</string>
+    <string name="activity_run_menu_musique">Music</string>
 
     <string name="activity_history_confirm_yes">Yes</string>
     <string name="activity_history_confirm_no">No</string>
@@ -51,6 +54,7 @@
         type?
     </string>
     <string name="menu_history_clear">Clear history</string>
+    <string name="menu_history_sort">Sort history</string>
 
     <string name="activity_profile_lbl_invite_age">Age :</string>
     <string name="activity_profile_lbl_invite_poids">Weight (kilograms):</string>
@@ -85,4 +89,35 @@
     <string name="activity_profile_spn_sexe_feminin">Female</string>
     <string name="activity_profile_tst_save_success">Saved successfully</string>
     <string name="activity_profile_tst_save_failure">Saving failure</string>
+    <string name="title_activity_statistics">Statistics</string>
+
+    <string name="fragment_stats_lbl_vitesse_avg">Avg speed :</string>
+    <string name="fragment_stats_lbl_duree_totale">Total duration :</string>
+    <string name="fragment_stats_lbl_duree_avg">Avg duration :</string>
+    <string name="fragment_stats_lbl_distance_totale">Total distance :</string>
+    <string name="fragment_stats_lbl_distance_avg">Avg distance :</string>
+    <string name="fragment_stats_lbl_pas_totaux">Total steps :</string>
+    <string name="fragment_stats_lbl_pas_avg">Avg steps :</string>
+    <string name="fragment_stats_lbl_calories_totales">Total calories :</string>
+    <string name="fragment_stats_lbl_calories_avg">Avg calories :</string>
+    <string name="fragment_stats_lbl_duree_defaut">%.2f min</string>
+    <string name="fragment_stats_lbl_distance_defaut">%.2f km</string>
+    <string name="fragment_stats_lbl_vitesse_defaut">%.2f km/h</string>
+
+    <string name="fragment_stats_trajet_lbl_vitesse_avg">Avg speed :</string>
+    <string name="fragment_stats_trajet_lbl_duree_totale">Total duration :</string>
+    <string name="fragment_stats_trajet_lbl_duree_avg">Avg duration :</string>
+    <string name="fragment_stats_trajet_lbl_calories_totales">Total calories :</string>
+    <string name="fragment_stats_trajet_lbl_calories_avg">Avg calories :</string>
+    <string name="fragment_stats_trajet_lbl_distance">Path distance :</string>
+    <string name="fragment_stats_trajet_lbl_count">Times ran :</string>
+    <string name="fragment_stats_trajet_lbl_nom_defaut">Nom trajet</string>
+    <string name="fragment_stats_trajet_lbl_duree_defaut">%.2f min</string>
+    <string name="fragment_stats_trajet_lbl_distance_defaut">%.2f km</string>
+    <string name="fragment_stats_trajet_lbl_vitesse_defaut">%.2f km/h</string>
+    <string name="fragment_stats_trajet_menu_suppr">Delete</string>
+    <string name="fragment_stats_trajet_dialog_suppr_title">Delete Path</string>
+    <string name="fragment_stats_trajet_dialog_suppr_message">Are you sure to delete this path?</string>
+    <string name="fragment_stats_trajet_dialog_suppr_yes">Yes</string>
+    <string name="fragment_stats_trajet_dialog_suppr_no">No</string>
 </resources>

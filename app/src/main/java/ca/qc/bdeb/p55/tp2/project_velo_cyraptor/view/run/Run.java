@@ -3,6 +3,7 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.run;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -17,11 +18,13 @@ import android.view.MenuItem;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.history.History;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile.Profile;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics.Statistics;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnFragmentInteractionListener;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.ViewPagerAdapter;
 
-public class Run extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        OnFragmentInteractionListener {
+import static android.provider.MediaStore.INTENT_ACTION_MUSIC_PLAYER;
+
+public class Run extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final int POSITION_TABULATION_RUN = 0;
     private TabLayout tabLayout;
@@ -31,7 +34,7 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.run_activity_run);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_run);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -105,18 +108,19 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_run, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.activity_run_menu_musique){
+            Intent intent = new Intent(INTENT_ACTION_MUSIC_PLAYER);
+            startActivity(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -130,7 +134,8 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
             Intent intent = new Intent(this, Profile.class);
             startActivity(intent);
         } else if (id == R.id.nav_stats) {
-
+            Intent intent = new Intent(this, Statistics.class);
+            startActivity(intent);
         } else if (id == R.id.nav_history) {
             Intent intent = new Intent(this, History.class);
             startActivity(intent);
@@ -139,10 +144,5 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

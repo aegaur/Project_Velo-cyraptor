@@ -30,6 +30,7 @@ public class CourseFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private DbHelper dbHelper;
     private RecyclerView recyclerView;
+    private HistorySorts historySorts = HistorySorts.DATE;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,10 +63,7 @@ public class CourseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
 
-
-        // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             chargerCourses();
         }
@@ -73,7 +71,7 @@ public class CourseFragment extends Fragment {
     }
 
     private void chargerCourses() {
-        List<Course> listeCourses = dbHelper.getTousCourses(typeCourse.name());
+        List<Course> listeCourses = dbHelper.getTousCourses(typeCourse.name(), historySorts);
         recyclerView.setAdapter(new CourseAdapter(listeCourses, mListener, getContext()));
     }
 
@@ -98,7 +96,12 @@ public class CourseFragment extends Fragment {
         return typeCourse;
     }
 
-    public void refraichir() {
+    public void refraichir(){
+        chargerCourses();
+    }
+
+    public void rearangerListe(HistorySorts historySorts) {
+        this.historySorts = historySorts;
         chargerCourses();
     }
 }

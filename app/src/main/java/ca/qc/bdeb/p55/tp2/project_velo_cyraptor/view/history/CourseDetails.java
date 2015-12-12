@@ -14,7 +14,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapLoadedCallback {
@@ -26,6 +25,7 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
     private static final int PADDING_CENTER_ALL_POINTS = 50;
 
     private Course course;
+
     private TextView lblCalories;
     private TextView lblDate;
     private TextView lblDistance;
@@ -39,7 +39,7 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_run);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         course = (Course) getIntent().getSerializableExtra(CLEE_COURSE);
