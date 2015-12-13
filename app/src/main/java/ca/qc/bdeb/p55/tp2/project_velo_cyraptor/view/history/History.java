@@ -40,6 +40,10 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         dbHelper = DbHelper.getInstance(this);
     }
 
+    /**
+     * Initialize le view pager et son listener de changemnt, seulement onPageSelected est choisi cage elle est appelée
+     * juste avant l'animation
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         tabFragments = new CourseFragment[TypeCourse.values().length];
@@ -71,6 +75,9 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Crée une boite de dialogue pour une sorte de tri
+     */
     private void dialogSortHistory() {
         final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(this);
 
@@ -90,12 +97,19 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         constructeurDialog.show();
     }
 
+    /**
+     * Mets à jour les listes
+     */
     private void reloadFragments() {
         for (CourseFragment courseFragment : tabFragments) {
             courseFragment.rafraichir(HistorySorts.values()[indiceSortChoisi]);
         }
     }
 
+    /**
+     * Appelle l'activité de détails
+     * @param course la course choisie
+     */
     @Override
     public void onListFragmentInteraction(Course course) {
         Intent intent = new Intent(this, CourseDetails.class);
@@ -103,6 +117,9 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         startActivity(intent);
     }
 
+    /**
+     * Crée une boite de dialogue pour confirmer la supression de l'historique
+     */
     private void confirmClearHistory() {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -117,6 +134,9 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
                 .setNegativeButton(R.string.activity_history_confirm_no, null).show();
     }
 
+    /**
+     * Supprime l'historique
+     */
     private void clearHistory() {
         CourseFragment courseFragment = tabFragments[tabLayout.getSelectedTabPosition()];
         dbHelper.viderHistorique(courseFragment.getTypeCourse());
