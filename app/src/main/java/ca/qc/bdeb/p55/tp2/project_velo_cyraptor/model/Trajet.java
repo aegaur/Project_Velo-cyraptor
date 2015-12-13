@@ -11,6 +11,9 @@ public class Trajet implements Serializable {
     private String nom;
     private double distance;
     private long meilleurTemps;
+    /**
+     * Liste des points parcourue pendant le trajet
+     */
     private LinkedList<PointCourse> listePoints;
 
     public Trajet(int id, String nom, double distance, long meilleurTemps, LinkedList<PointCourse> listePoints) {
@@ -46,10 +49,6 @@ public class Trajet implements Serializable {
 
     public double getDistance() {
         return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
     }
 
     public long getMeilleurTemps() {

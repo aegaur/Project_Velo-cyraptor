@@ -23,13 +23,12 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
  */
 public class GestionnaireMap implements OnMapReadyCallback {
     private static final float ZOOM_INITIAL = 15.0f;
-    private static final int INTERVALLE_SAUVEGARDE_MOUVEMENT = 5;
     private static final float LARGEUR_LIGNE = 7.5f;
     private static final int NOMBRE_RESULTATS = 3;
     private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
     private static final int INDICE_RESULTAT = 0;
     private static final int PADDING_CENTER_ALL_POINTS = 50;
-    private static final double CIRCLE_RADIUS = 18;
+    private static final double CIRCLE_RADIUS = 15.5;
 
     private LinkedList<PointCourse> listePoints = new LinkedList<>();
     private boolean onMapAnimationFinished = false;
@@ -179,6 +178,12 @@ public class GestionnaireMap implements OnMapReadyCallback {
         this.pointsTrajet = pointsTrajet;
         indicePointCourantFantome = 0;
         distanceCouranteFantome = 0;
+        if (polylineGhost != null) {
+            polylineGhost.remove();
+        }
+        if (ghostCircle != null) {
+            ghostCircle.remove();
+        }
         polylineGhost = map.addPolyline(new PolylineOptions().width(LARGEUR_LIGNE)
                 .color(context.getResources().getColor(R.color.colorGhost)));
         List<LatLng> listeLatLng = new ArrayList<>();
@@ -187,9 +192,6 @@ public class GestionnaireMap implements OnMapReadyCallback {
         }
         polylineGhost.setPoints(listeLatLng);
         centerOnGhostPoints();
-        if (ghostCircle != null) {
-            ghostCircle.remove();
-        }
         ghostCircle = map.addCircle(new CircleOptions().center(pointsTrajet.get(indicePointCourantFantome).getLatLng())
                 .fillColor(R.color.colorGhost).radius(CIRCLE_RADIUS).strokeWidth(1).strokeColor(R.color.colorAccent));
     }

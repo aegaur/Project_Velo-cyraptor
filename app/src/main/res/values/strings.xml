@@ -47,6 +47,11 @@
     <string name="activity_run_path_creation_no">No</string>
     <string name="activity_run_menu_musique">Music</string>
     <string name="activity_run_toast_location_not_ready">Location is not ready yet, try again in a few seconds</string>
+    <string name="activity_run_path_mise_a_jour_title">New highscore</string>
+    <string name="activity_run_path_mise_a_jour_message">It seems you beat the best time for this path, do you want to
+        have your time be the new highscore?</string>
+    <string name="activity_run_path_mise_a_jour_yes">Yes</string>
+    <string name="activity_run_path_mise_a_jour_no">No</string>
 
     <string name="activity_history_confirm_yes">Yes</string>
     <string name="activity_history_confirm_no">No</string>

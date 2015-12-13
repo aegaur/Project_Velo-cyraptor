@@ -212,21 +212,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertTrajet(Trajet trajet) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long id;
-
-        ContentValues values = new ContentValues();
-        values.put(TRAJET_NOM, trajet.getNom());
-        values.put(TRAJET_DISTANCE, trajet.getDistance());
-        values.put(TRAJET_MEILLEUR_TEMPS, trajet.getMeilleurTemps());
-        id = db.insert(TABLE_COURSE, null, values);
-
-        insertPoints(db, id, trajet.getListePoints());
-
-        db.close();
-    }
-
     public void updateTrajet(Trajet trajet) {
         SQLiteDatabase db = this.getWritableDatabase();
 
