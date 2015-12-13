@@ -349,6 +349,9 @@ public class RunFragment extends Fragment implements CallbackMap {
                 .show();
     }
 
+    /**
+     * Met le trajet à jour en lui affectant les nouvelles valeurs
+     */
     private void mettreTrajetAJour() {
         Trajet trajet = this.course.getTrajet();
         trajet.setMeilleurTemps(this.choChronometre.getElapsedTimeInMillis());

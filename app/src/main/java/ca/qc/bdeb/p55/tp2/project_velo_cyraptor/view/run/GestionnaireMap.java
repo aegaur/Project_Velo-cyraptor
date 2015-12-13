@@ -24,16 +24,25 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 public class GestionnaireMap implements OnMapReadyCallback {
     private static final float ZOOM_INITIAL = 15.0f;
     private static final float LARGEUR_LIGNE = 7.5f;
+    /**
+     * Taille du tableau de résultats de la méthode de calcul de la distance de Google
+     */
     private static final int NOMBRE_RESULTATS = 3;
-    private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
+    /**
+     * Indice du résultat qui nous intéresse dans le tableau de résultats
+     */
     private static final int INDICE_RESULTAT = 0;
-    private static final int PADDING_CENTER_ALL_POINTS = 50;
+    private static final int NOMBRE_DE_METRES_PAR_KM = 1000;
+    private static final int PADDING_CENTER_ALL_POINTS = 30;
     private static final double CIRCLE_RADIUS = 15.5;
 
     private LinkedList<PointCourse> listePoints = new LinkedList<>();
-    private boolean onMapAnimationFinished = false;
-    private boolean firstTime = true;
-    private boolean isRunning = false;
+    /**
+     * Détermine si l'animation de mouvement est terminée ou non
+     */
+    private boolean onMapAnimationFinished;
+    private boolean firstTime;
+    private boolean isRunning;
     private Polyline polyline;
     private GoogleMap map;
     private Context context;
@@ -41,13 +50,16 @@ public class GestionnaireMap implements OnMapReadyCallback {
     private double distanceTotale;
     private double distanceCouranteFantome;
     private LinkedList<PointCourse> pointsTrajet;
-    private int indicePointCourantFantome = 0;
+    private int indicePointCourantFantome;
     private Polyline polylineGhost;
     private Circle ghostCircle;
 
     public GestionnaireMap(Context context, CallbackMap callbackMap) {
         this.context = context;
         this.callbackMap = callbackMap;
+        this.isRunning = false;
+        this.firstTime = true;
+        this.indicePointCourantFantome = 0;
     }
 
     @Override
@@ -66,6 +78,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Sauvegarde le point courant dans la liste de points
+     */
     private void savePoint(Location location) {
         LatLng myLatLng;
         if (firstTime) {
@@ -81,6 +96,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Mets la position du fantôme à jour
+     */
     private void updateGhost() {
         if (pointsTrajet != null && ++indicePointCourantFantome < pointsTrajet.size()) {
             PointCourse pointCourant = pointsTrajet.get(indicePointCourantFantome);
@@ -90,6 +108,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
     }
 
     private void animerCameraMap(CameraUpdate cameraUpdate) {
+        onMapAnimationFinished = false;
         map.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
@@ -136,6 +155,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Ajoute le point dans la liste de points et mets la polyline, soit l'affichage, à jour
+     */
     void updatePath(LatLng position) {
         updateDistanceTotale();
         listePoints.add(new PointCourse(position, distanceTotale));
@@ -148,6 +170,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
         return distanceTotale;
     }
 
+    /**
+     * Mets la distance totale à jour
+     */
     private void updateDistanceTotale() {
         float[] results = new float[NOMBRE_RESULTATS];
         float resultat = 0.0f;
@@ -165,15 +190,17 @@ public class GestionnaireMap implements OnMapReadyCallback {
         distanceTotale = resultat;
     }
 
+    /**
+     * Calcule la distance entre deux points
+     */
     private float calculerDistance(LatLng latLng1, LatLng latLng2, float[] results) {
         Location.distanceBetween(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude, results);
         return results[INDICE_RESULTAT] / NOMBRE_DE_METRES_PAR_KM;
     }
 
-    public LinkedList<PointCourse> getListePoints() {
-        return listePoints;
-    }
-
+    /**
+     *
+     */
     public void setPointsTrajet(LinkedList<PointCourse> pointsTrajet) {
         this.pointsTrajet = pointsTrajet;
         indicePointCourantFantome = 0;
@@ -201,7 +228,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
         for (LatLng latLng : polylineGhost.getPoints()) {
             builder.include(latLng);
         }
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING_CENTER_ALL_POINTS));
+        animerCameraMap(CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING_CENTER_ALL_POINTS));
     }
 
     public double getDistanceCouranteFantome() {
@@ -210,5 +237,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
 
     public boolean isReady() {
         return map.getMyLocation() != null;
+    }
+
+    public LinkedList<PointCourse> getListePoints() {
+        return listePoints;
     }
 }
