@@ -3,7 +3,6 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,15 +56,17 @@ public class StatisticsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
-        assignerCompostants(view);
-        affecterValeurs();
+        assignerComposants(view);
+        affecterValeursEtModifierVue();
         return view;
     }
 
-    private void assignerCompostants(View view) {
+    /**
+     * Assigne tous les composants à leurs variables
+     */
+    private void assignerComposants(View view) {
         lblCaloriesAvg = (TextView) view.findViewById(R.id.stats_fragment_lbl_calories_avg);
         lblCaloriesSum = (TextView) view.findViewById(R.id.stats_fragment_lbl_calories_totaux);
         lblDistanceAvg = (TextView) view.findViewById(R.id.stats_fragment_lbl_distance_avg);
@@ -81,7 +82,10 @@ public class StatisticsFragment extends Fragment {
         spcPas2 = (Space) view.findViewById(R.id.stats_fragment_spc_pas_2);
     }
 
-    private void affecterValeurs() {
+    /**
+     * Affecte toutes les valeurs à leurs composants si c'est possible, cache les composants si c'est impossible
+     */
+    private void affecterValeursEtModifierVue() {
         if (typeCourse == TypeCourse.A_VELO
                 || !getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
             layPasAvg.setVisibility(View.GONE);
@@ -106,6 +110,9 @@ public class StatisticsFragment extends Fragment {
                 statistiques.getVitesseMoyenne()));
     }
 
+    /**
+     * Converti un temps de millisecondes en minutes
+     */
     private double millisToMin(double millis) {
         double secondes = millis / NOMBRE_MILLIS_DANS_SECONDE;
         double minutes = secondes / NOMBRE_SECONDES_DANS_MINUTE;

@@ -32,6 +32,9 @@ public class Statistics extends AppCompatActivity implements OnFragmentInteracti
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    /**
+     * Initialize le view pager
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -41,6 +44,9 @@ public class Statistics extends AppCompatActivity implements OnFragmentInteracti
         viewPager.setAdapter(adapter);
     }
 
+    /**
+     * Évènement recue lors du click sur un élément de la liste de trajets
+     */
     @Override
     public void onFragmentInteraction(Trajet trajet) {
         Intent intent = new Intent(this, TrajetDetail.class);

@@ -1,19 +1,16 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics;
 
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Statistiques;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Trajet;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance.DbHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,7 +52,7 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
         trajet = (Trajet) getIntent().getSerializableExtra(CLEE_TRAJET);
         dbHelper = DbHelper.getInstance(this);
         statistiques = dbHelper.getStatsTrajet(trajet);
-        assignerCompostants();
+        assignerComposants();
         affecterValeurs();
         setUpMapIfNeeded();
     }
@@ -85,6 +82,9 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Confirme la suppression du trajet
+     */
     private void confirmerSuppressionTrajet(){
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -100,7 +100,10 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
                 .setNegativeButton(R.string.fragment_stats_trajet_dialog_suppr_no, null).show();
     }
 
-    private void assignerCompostants() {
+    /**
+     * Assigne tous les composants à leurs variables
+     */
+    private void assignerComposants() {
         lblNomTrajet = (TextView) findViewById(R.id.stats_fragment_trajet_lbl_nom);
         lblCaloriesAvg = (TextView) findViewById(R.id.stats_fragment_trajet_lbl_calories_avg);
         lblCaloriesSum = (TextView) findViewById(R.id.stats_fragment_trajet_lbl_calories_totaux);
@@ -112,6 +115,9 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
         fragMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.stats_fragment_trajet_map);
     }
 
+    /**
+     * Affecte les valeurs à leurs composants
+     */
     private void affecterValeurs() {
         lblNomTrajet.setText(trajet.getNom());
         lblCaloriesAvg.setText(Integer.toString(statistiques.getCaloriesMoyennes()));
@@ -127,6 +133,9 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
                 statistiques.getVitesseMoyenne()));
     }
 
+    /**
+     * Transforme un temps de millisecondes à minutes
+     */
     private double millisToMin(double millis) {
         double secondes = millis / NOMBRE_MILLIS_DANS_SECONDE;
         double minutes = secondes / NOMBRE_SECONDES_DANS_MINUTE;

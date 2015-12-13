@@ -43,6 +43,9 @@ public class TrajetFragment extends ListFragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Recharge les trajets on resume
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -76,7 +79,6 @@ public class TrajetFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
         if (null != mListener) {
             mListener.onFragmentInteraction(listeTrajets.get(position));
         }
