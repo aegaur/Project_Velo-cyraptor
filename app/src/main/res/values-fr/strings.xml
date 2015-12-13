@@ -18,7 +18,7 @@
     <string name="activity_run_btn_start">Démarrer une course</string>
     <string name="activity_run_btn_pause">Pause</string>
     <string name="activity_run_btn_stop">Arrêter</string>
-    <string name="activity_run_btn_resume">Redémarrer</string>
+    <string name="activity_run_btn_resume">Reprendre</string>
     <string name="activity_run_btn_path">Choisir un trajet</string>
     <string name="activity_run_btn_path_name">Trajet : %s</string>
     <string name="activity_run_lbl_steps_defaut">0</string>
