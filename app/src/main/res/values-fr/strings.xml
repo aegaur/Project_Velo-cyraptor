@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Project_velo_cyraptor</string>
+
+    <string name="title_activity_profile">Profil</string>
+    <string name="title_activity_history">Historique</string>
+    <string name="title_activity_course_details">Détails de la course</string>
+    <string name="activity_bike_section_title">Vélo</string>
+    <string name="activity_run_section_title">Course</string>
+
+    <string name="step_counter">android.hardware.sensor.stepcounter</string>
+    <string name="step_detector">android.hardware.sensor.stepdetector</string>
+
+    <string name="activity_run_dialog_gps_cancel">Annuler</string>
+    <string name="activity_run_dialog_gps_message">Votre GPS semble désactivé</string>
+    <string name="activity_run_dialog_gps_settings">Aller dans les paramètres pour activé le GPS</string>
+
+    <string name="activity_bike_btn_start">Démarrer une course à vélo</string>
+
+    <string name="activity_run_btn_start">Démarrer une course</string>
+    <string name="activity_run_btn_pause">Pause</string>
+    <string name="activity_run_btn_stop">Arrêter</string>
+    <string name="activity_run_btn_resume">Redémarrer</string>
+    <string name="activity_run_btn_path">Choisir un trajet</string>
+    <string name="activity_run_btn_path_name">Trajet : %s</string>
+    <string name="activity_run_lbl_steps_defaut">0</string>
+    <string name="activity_run_lbl_calories_defaut">0</string>
+    <string name="activity_run_lbl_vitesse_defaut">0.0 km/h</string>
+    <string name="activity_run_lbl_vitesse_valeur">%.1f km/h</string>
+    <string name="activity_run_lbl_distance_valeur">%.1f km</string>
+    <string name="activity_run_lbl_distance_defaut">0.0 km</string>
+    <string name="activity_run_lbl_steps">Pas :</string>
+    <string name="activity_run_lbl_calories">Calories :</string>
+    <string name="activity_run_lbl_vitesse">Vitesse moyenne :</string>
+    <string name="activity_run_lbl_distance">Distance :</string>
+    <string name="activity_run_chrono_default">00:00:00</string>
+    <string name="activity_run_path_selection_title">Sélection du trajet</string>
+    <string name="activity_run_path_selection_cancel">Annuler</string>
+    <string name="activity_run_path_selection_none">Aucun</string>
+    <string name="activity_run_path_selection_ok">Ok</string>
+    <string name="activity_run_path_selection_no_path">Aucun trajet a choisir</string>
+    <string name="activity_run_path_creation_title">Nouveau trajet</string>
+    <string name="activity_run_path_creation_message">Voulez-vous sauvegarder cette course comme trajet?</string>
+    <string name="activity_run_path_creation_placeholder">Nom du trajet</string>
+    <string name="activity_run_path_creation_yes">Oui</string>
+    <string name="activity_run_path_creation_no">Non</string>
+
+    <string name="activity_history_confirm_yes">Oui</string>
+    <string name="activity_history_confirm_no">Non</string>
+    <string name="activity_history_confirm_title">Supprimer l'historique</string>
+    <string name="activity_history_confirm_message">Êtes-vous sûr de vouloir supprimer tout l'historique pour ce type de course?</string>
+    <string name="menu_history_clear">Supprimer l'historique</string>
+
+    <string name="activity_profile_lbl_invite_age">Âge :</string>
+    <string name="activity_profile_lbl_invite_poids">Poids (kilogrammes):</string>
+    <string name="activity_profile_lbl_invite_taille">Taille (centimètres):</string>
+    <string name="activity_profile_lbl_invite_sexe">Sexe :</string>
+    <string name="activity_profile_btn_save">Sauvegarder les changements</string>
+
+    <string name="fragment_course_unite_temps">minutes</string>
+
+    <string name="content_course_lbl_date_defaut">00/00/2000</string>
+    <string name="content_course_lbl_duree_defaut">%.2f min</string>
+    <string name="content_course_lbl_duree_invite">Durée :</string>
+    <string name="content_course_lbl_distance_defaut">%.2f km</string>
+    <string name="content_course_lbl_distance_invite">Distance :</string>
+    <string name="content_course_lbl_speed_defaut">%.2f km/h</string>
+    <string name="content_course_lbl_speed_invite">Vitesse moyenne :</string>
+    <string name="content_course_lbl_calories_defaut">0</string>
+    <string name="content_course_lbl_calories_invite">Calories :</string>
+    <string name="content_course_lbl_steps_defaut">0</string>
+    <string name="content_course_lbl_steps_invite">Pas :</string>
+
+    <string name="nav_history">Historique</string>
+    <string name="nav_stats">Statistiques</string>
+    <string name="nav_profil">Profil</string>
+    <string name="activity_run_path_selection_positive">Selectionner</string>
+
+    <string name="activity_profile_spn_sexe_indetermine">Indéterminé</string>
+    <string name="activity_profile_spn_sexe_masculin">Homme</string>
+    <string name="activity_profile_spn_sexe_feminin">Femme</string>
+</resources>

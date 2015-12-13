@@ -91,8 +91,8 @@
     <string name="activity_run_path_selection_positive">Select</string>
 
     <string name="activity_profile_spn_sexe_indetermine">Undetermined</string>
-    <string name="activity_profile_spn_sexe_masculin">Male</string>
-    <string name="activity_profile_spn_sexe_feminin">Female</string>
+    <string name="activity_profile_spn_sexe_masculin">Man</string>
+    <string name="activity_profile_spn_sexe_feminin">Woman</string>
     <string name="activity_profile_tst_save_success">Saved successfully</string>
     <string name="activity_profile_tst_save_failure">Saving failure</string>
     <string name="title_activity_statistics">Statistics</string>
