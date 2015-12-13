@@ -147,12 +147,7 @@ public class GestionnaireMap implements OnMapReadyCallback {
         savePoint(map.getMyLocation());
         listePoints.clear();
         polyline.remove();
-        if (polylineGhost != null) {
-            polylineGhost.remove();
-        }
-        if (ghostCircle != null) {
-            ghostCircle.remove();
-        }
+        retirerGhostEtPathGhost();
     }
 
     /**
@@ -198,19 +193,23 @@ public class GestionnaireMap implements OnMapReadyCallback {
         return results[INDICE_RESULTAT] / NOMBRE_DE_METRES_PAR_KM;
     }
 
-    /**
-     *
-     */
-    public void setPointsTrajet(LinkedList<PointCourse> pointsTrajet) {
-        this.pointsTrajet = pointsTrajet;
-        indicePointCourantFantome = 0;
-        distanceCouranteFantome = 0;
+    private void retirerGhostEtPathGhost(){
         if (polylineGhost != null) {
             polylineGhost.remove();
         }
         if (ghostCircle != null) {
             ghostCircle.remove();
         }
+    }
+
+    /**
+     * Change la liste de points du trajet et instancie les rendues visuelles nécessaires
+     */
+    public void setPointsTrajet(LinkedList<PointCourse> pointsTrajet) {
+        this.pointsTrajet = pointsTrajet;
+        indicePointCourantFantome = 0;
+        distanceCouranteFantome = 0;
+        retirerGhostEtPathGhost();
         polylineGhost = map.addPolyline(new PolylineOptions().width(LARGEUR_LIGNE)
                 .color(context.getResources().getColor(R.color.colorGhost)));
         List<LatLng> listeLatLng = new ArrayList<>();
@@ -223,6 +222,9 @@ public class GestionnaireMap implements OnMapReadyCallback {
                 .fillColor(R.color.colorGhost).radius(CIRCLE_RADIUS).strokeWidth(1).strokeColor(R.color.colorAccent));
     }
 
+    /**
+     * Centre la caméra sur l'ensemble de points qu'est la liste de points du trajet
+     */
     private void centerOnGhostPoints() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (LatLng latLng : polylineGhost.getPoints()) {

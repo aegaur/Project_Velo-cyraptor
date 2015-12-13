@@ -12,12 +12,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import android.util.Log;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.*;
 
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.history.HistorySorts;
-import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics.Statistics;
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by gabriel on 2015-12-09.
@@ -79,8 +76,43 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String STATS_DUREE_AVG = "DUREE_AVG";
     private static final String STATS_DUREE_SUM = "DUREE_SUM";
     private static final String STATS_COUNT_TRAJET = "COUNT_TRAJET";
+    // Script de création de la table course
+    private static final String CREATE_TABLE_COURSE = "CREATE TABLE " + TABLE_COURSE + "("
+            + COURSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COURSE_TRAJET_ID + " INTEGER NULL,"
+            + COURSE_TYPE + " TEXT NOT NULL,"
+            + COURSE_DATE + " TEXT NOT NULL,"
+            + COURSE_DISTANCE + " REAL NOT NULL,"
+            + COURSE_DUREE + " INTEGER NOT NULL,"
+            + COURSE_VITESSE + " REAL NOT NULL,"
+            + COURSE_CALORIES + " INTEGER NOT NULL,"
+            + COURSE_PAS + " INTEGER NOT NULL," +
+            "FOREIGN KEY (" + COURSE_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
+            ")";
+    // Script de création de la table trajet
+    private static final String CREATE_TABLE_TRAJET = "CREATE TABLE " + TABLE_TRAJET + "("
+            + TRAJET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + TRAJET_NOM + " TEXT NOT NULL,"
+            + TRAJET_DISTANCE + " REAL NOT NULL,"
+            + TRAJET_MEILLEUR_TEMPS + " INTEGER NOT NULL)";
+    // Script de création de la table point
+    private static final String CREATE_TABLE_POINT = "CREATE TABLE " + TABLE_POINT + "("
+            + POINT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + POINT_TRAJET_ID + " INTEGER NOT NULL,"
+            + POINT_LONGITUDE + " REAL NOT NULL,"
+            + POINT_LATITUDE + " REAL NOT NULL,"
+            + POINT_DISTANCE + " REAL NOT NULL," +
+            "FOREIGN KEY (" + POINT_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
+            ")";
+    /**
+     * Script de création de la table point.
+     * Elle est batie sur le modèle d'une HashMap : une clée et sa valeur.
+     */
+    private static final String CREATE_TABLE_PROFIL = "CREATE TABLE " + TABLE_PROFIL + "("
+            + PROFIL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + PROFIL_KEY + " TEXT NOT NULL,"
+            + PROFIL_VALUE + " INTEGER NOT NULL)";
 
-    // …
     public static DbHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DbHelper(context.getApplicationContext());
@@ -91,8 +123,6 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Constructeur de DBHelper
      */
-
-
     private DbHelper(Context context) {
         super(context, DB_NAME, null, DBVERSION);
         this.context = context;
@@ -103,45 +133,18 @@ public class DbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TABLE_TRAJET);
+        db.execSQL(CREATE_TABLE_COURSE);
+        db.execSQL(CREATE_TABLE_POINT);
+        db.execSQL(CREATE_TABLE_PROFIL);
 
-        String createTableCourse = "CREATE TABLE " + TABLE_COURSE + "("
-                + COURSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COURSE_TRAJET_ID + " INTEGER NULL,"
-                + COURSE_TYPE + " TEXT NOT NULL,"
-                + COURSE_DATE + " TEXT NOT NULL,"
-                + COURSE_DISTANCE + " REAL NOT NULL,"
-                + COURSE_DUREE + " INTEGER NOT NULL,"
-                + COURSE_VITESSE + " REAL NOT NULL,"
-                + COURSE_CALORIES + " INTEGER NOT NULL,"
-                + COURSE_PAS + " INTEGER NOT NULL," +
-                "FOREIGN KEY (" + COURSE_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
-                ")";
+        insererProfilParDefaut(db);
+    }
 
-        String createTableTrajet = "CREATE TABLE " + TABLE_TRAJET + "("
-                + TRAJET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + TRAJET_NOM + " TEXT NOT NULL,"
-                + TRAJET_DISTANCE + " REAL NOT NULL,"
-                + TRAJET_MEILLEUR_TEMPS + " INTEGER NOT NULL)";
-
-        String createTablePoint = "CREATE TABLE " + TABLE_POINT + "("
-                + POINT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + POINT_TRAJET_ID + " INTEGER NOT NULL,"
-                + POINT_LONGITUDE + " REAL NOT NULL,"
-                + POINT_LATITUDE + " REAL NOT NULL,"
-                + POINT_DISTANCE + " REAL NOT NULL," +
-                "FOREIGN KEY (" + POINT_TRAJET_ID + ") REFERENCES " + TABLE_TRAJET + "(" + TRAJET_ID + ")" +
-                ")";
-
-        String createTableProfil = "CREATE TABLE " + TABLE_PROFIL + "("
-                + PROFIL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + PROFIL_KEY + " TEXT NOT NULL,"
-                + PROFIL_VALUE + " INTEGER NOT NULL)";
-
-        db.execSQL(createTableTrajet);
-        db.execSQL(createTableCourse);
-        db.execSQL(createTablePoint);
-        db.execSQL(createTableProfil);
-
+    /**
+     * Insère les valeurs du profil par défaut
+     */
+    private void insererProfilParDefaut(SQLiteDatabase db){
         ContentValues profilPoids = new ContentValues();
         profilPoids.put(PROFIL_KEY, PROFIL_KEY_POIDS);
         profilPoids.put(PROFIL_VALUE, POIDS_PAR_DEFAUT);
@@ -169,9 +172,11 @@ public class DbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Mettre les modifications de votre BD ici
     }
 
+    /**
+     * Retourne le profil
+     */
     public Profil getProfil() {
         SQLiteDatabase db = this.getReadableDatabase();
         Profil profil = null;
@@ -193,58 +198,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return profil;
     }
 
-    public void insertCourse(Course course) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        if (course.getTrajet() != null) {
-            values.put(COURSE_TRAJET_ID, course.getTrajet().getId());
-        }
-        values.put(COURSE_TYPE, course.getTYPE_COURSE().name());
-        values.put(COURSE_DATE, course.getDATE().toString());
-        values.put(COURSE_DISTANCE, course.getDistance());
-        values.put(COURSE_DUREE, course.getDuree());
-        values.put(COURSE_VITESSE, course.getVitesse());
-        values.put(COURSE_CALORIES, course.getDistance());
-        values.put(COURSE_PAS, course.getPas());
-
-        db.insert(TABLE_COURSE, null, values);
-        db.close();
-    }
-
-    public void updateTrajet(Trajet trajet) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(TRAJET_NOM, trajet.getNom());
-        values.put(TRAJET_DISTANCE, trajet.getDistance());
-        values.put(TRAJET_MEILLEUR_TEMPS, trajet.getMeilleurTemps());
-        db.update(TABLE_TRAJET, values, TRAJET_ID + " = ?",
-                new String[]{String.valueOf(trajet.getId())});
-
-        deletePoints(db, trajet.getId());
-        insertPoints(db, trajet.getId(), trajet.getListePoints());
-
-        db.close();
-    }
-
-    private void insertPoints(SQLiteDatabase db, long trajetId, LinkedList<PointCourse> listePoitns) {
-        ContentValues values;
-
-        for (PointCourse point : listePoitns) {
-            values = new ContentValues();
-            values.put(POINT_TRAJET_ID, trajetId);
-            values.put(POINT_LATITUDE, point.getLatitude());
-            values.put(POINT_LONGITUDE, point.getLongitude());
-            values.put(POINT_DISTANCE, point.getDistance());
-            db.insert(TABLE_POINT, null, values);
-        }
-    }
-
-    private void deletePoints(SQLiteDatabase db, long trajetId) {
-        db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(trajetId)});
-    }
-
+    /**
+     * Mets à jour les valeurs du profil
+     */
     public boolean updateProfil(Profil profil) {
         SQLiteDatabase db = this.getWritableDatabase();
         boolean success;
@@ -274,6 +230,73 @@ public class DbHelper extends SQLiteOpenHelper {
         return success;
     }
 
+    /**
+     * Insère une nouvelle course
+     */
+    public void insertCourse(Course course) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        if (course.getTrajet() != null) {
+            values.put(COURSE_TRAJET_ID, course.getTrajet().getId());
+        }
+        values.put(COURSE_TYPE, course.getTYPE_COURSE().name());
+        values.put(COURSE_DATE, course.getDATE().toString());
+        values.put(COURSE_DISTANCE, course.getDistance());
+        values.put(COURSE_DUREE, course.getDuree());
+        values.put(COURSE_VITESSE, course.getVitesse());
+        values.put(COURSE_CALORIES, course.getDistance());
+        values.put(COURSE_PAS, course.getPas());
+
+        db.insert(TABLE_COURSE, null, values);
+        db.close();
+    }
+
+    /**
+     * Mets à jour les données d'un trajet
+     */
+    public void updateTrajet(Trajet trajet) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TRAJET_NOM, trajet.getNom());
+        values.put(TRAJET_DISTANCE, trajet.getDistance());
+        values.put(TRAJET_MEILLEUR_TEMPS, trajet.getMeilleurTemps());
+        db.update(TABLE_TRAJET, values, TRAJET_ID + " = ?",
+                new String[]{String.valueOf(trajet.getId())});
+
+        deletePoints(db, trajet.getId());
+        insertPoints(db, trajet.getId(), trajet.getListePoints());
+
+        db.close();
+    }
+
+    /**
+     * Insère une liste de point liée à un trajet
+     */
+    private void insertPoints(SQLiteDatabase db, long trajetId, LinkedList<PointCourse> listePoitns) {
+        ContentValues values;
+
+        for (PointCourse point : listePoitns) {
+            values = new ContentValues();
+            values.put(POINT_TRAJET_ID, trajetId);
+            values.put(POINT_LATITUDE, point.getLatitude());
+            values.put(POINT_LONGITUDE, point.getLongitude());
+            values.put(POINT_DISTANCE, point.getDistance());
+            db.insert(TABLE_POINT, null, values);
+        }
+    }
+
+    /**
+     * Supprimer tous les points liés à un trajet
+     */
+    private void deletePoints(SQLiteDatabase db, long trajetId) {
+        db.delete(TABLE_POINT, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(trajetId)});
+    }
+
+    /**
+     * Retourne un liste de tous les trajets
+     */
     public ArrayList<Trajet> getTousTrajets() {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Trajet> trajets = new ArrayList<>();
@@ -293,6 +316,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return trajets;
     }
 
+    /**
+     * Retourne un trajet spécifique par id
+     */
     public Trajet getTrajetById(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Trajet trajet = null;
@@ -308,6 +334,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return trajet;
     }
 
+    /**
+     * Retourne une liste de points associée à un trajet par id
+     */
     private LinkedList<PointCourse> getListePointsParIdTrajet(SQLiteDatabase db, int idTrajet) {
         Cursor cursor = db.query(TABLE_POINT, null, POINT_TRAJET_ID + " = ?", new String[]{String.valueOf(idTrajet)},
                 null, null, null, null);
@@ -325,7 +354,10 @@ public class DbHelper extends SQLiteOpenHelper {
         return listePoints;
     }
 
-    public List<Course> getTousCourses(String type, HistorySorts  historySorts) {
+    /**
+     * Retourne une liste de toutes les courses et les classes par le classement sélectionné
+     */
+    public List<Course> getTousCourses(String type, HistorySorts historySorts) {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Course> courses = new ArrayList<>();
         Cursor cursor = db.query(TABLE_COURSE, null, COURSE_TYPE + " = ?", new String[]{type}, null, null, historySorts.getORDER_BY_STRING(), null);
