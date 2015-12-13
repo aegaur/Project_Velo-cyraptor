@@ -76,10 +76,9 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
 
         constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add(getString(R.string.activity_run_path_selection_none));
 
         for (HistorySorts historySorts : HistorySorts.values()) {
-            arrayAdapter.add(historySorts.name());
+            arrayAdapter.add(getString(historySorts.getDISPLAY_ID()));
         }
         constructeurDialog.setSingleChoiceItems(arrayAdapter, indiceSortChoisi, new DialogInterface.OnClickListener() {
             @Override

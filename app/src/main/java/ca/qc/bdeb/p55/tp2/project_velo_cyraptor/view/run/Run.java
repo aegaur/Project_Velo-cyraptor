@@ -55,6 +55,10 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
         updateActionBar(POSITION_TABULATION_RUN);
     }
 
+    /**
+     * Initialize le view pager et son listener de changemnt, seulement onPageSelected est choisi cage elle est appelée
+     * juste avant l'animation
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(RunFragment.newInstance(true), getString(R.string.activity_run_section_title));
@@ -76,6 +80,9 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
         });
     }
 
+    /**
+     * Met l'action bar à jour en changeant ses valeurs dépendamment du fragment actif
+     */
     private void updateActionBar(int position) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -125,6 +132,9 @@ public class Run extends AppCompatActivity implements NavigationView.OnNavigatio
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Évènement de choix d'un item dans le navigation drawer
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
