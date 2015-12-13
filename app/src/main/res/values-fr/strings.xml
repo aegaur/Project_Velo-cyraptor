@@ -55,6 +55,10 @@
     <string name="activity_history_confirm_message">Êtes-vous sûr de vouloir supprimer tout l\'historique pour ce type de course?</string>
     <string name="menu_history_clear">Supprimer l\'historique</string>
     <string name="menu_history_sort">Trier l\'historique</string>
+    <string name="activity_history_dialog_sort_date">Par date</string>
+    <string name="activity_history_dialog_sort_trajet">Par trajet</string>
+    <string name="activity_history_dialog_sort_duree">Par durée</string>
+    <string name="activity_history_dialog_sort_distance">Par distance</string>
 
     <string name="activity_profile_lbl_invite_age">Âge :</string>
     <string name="activity_profile_lbl_invite_poids">Poids (kilogrammes):</string>
@@ -84,8 +88,8 @@
     <string name="activity_profile_spn_sexe_indetermine">Indéterminé</string>
     <string name="activity_profile_spn_sexe_masculin">Homme</string>
     <string name="activity_profile_spn_sexe_feminin">Femme</string>
-    <string name="activity_profile_tst_save_success">Sauvergarde réussi</string>
-    <string name="activity_profile_tst_save_failure">Sauvergarde échoué</string>
+    <string name="activity_profile_tst_save_success">Sauvergarde réussie</string>
+    <string name="activity_profile_tst_save_failure">Sauvergarde échouée</string>
     <string name="title_activity_statistics">Statistiques</string>
 
     <string name="fragment_stats_lbl_vitesse_avg">Vitesse moy. :</string>

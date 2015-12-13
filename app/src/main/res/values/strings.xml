@@ -61,6 +61,10 @@
     </string>
     <string name="menu_history_clear">Clear history</string>
     <string name="menu_history_sort">Sort history</string>
+    <string name="activity_history_dialog_sort_date">By date</string>
+    <string name="activity_history_dialog_sort_trajet">By path</string>
+    <string name="activity_history_dialog_sort_duree">By duration</string>
+    <string name="activity_history_dialog_sort_distance">By distance</string>
 
     <string name="activity_profile_lbl_invite_age">Age :</string>
     <string name="activity_profile_lbl_invite_poids">Weight (kilograms):</string>

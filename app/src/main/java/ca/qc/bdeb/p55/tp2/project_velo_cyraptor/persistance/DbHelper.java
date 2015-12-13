@@ -76,6 +76,27 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String STATS_DUREE_AVG = "DUREE_AVG";
     private static final String STATS_DUREE_SUM = "DUREE_SUM";
     private static final String STATS_COUNT_TRAJET = "COUNT_TRAJET";
+    // La requête pour obtenir toutes les statistques
+    private static final String REQUETE_STATISTIQUES =
+            "select sum(" + COURSE_CALORIES + ") as " + STATS_CALORIES_SUM +
+                    ", avg(" + COURSE_CALORIES + ") as " + STATS_CALORIES_AVG +
+                    ", sum(" + COURSE_PAS + ") as " + STATS_PAS_SUM +
+                    ", avg(" + COURSE_PAS + ") as " + STATS_PAS_AVG +
+                    ", avg(" + COURSE_VITESSE + ") as " + STATS_VITESSE_AVG +
+                    ", sum(" + COURSE_DISTANCE + ") as " + STATS_DISTANCE_SUM +
+                    ", avg(" + COURSE_DISTANCE + ") as " + STATS_DISTANCE_AVG +
+                    ", sum(" + COURSE_DUREE + ") as " + STATS_DUREE_SUM +
+                    ", avg(" + COURSE_DUREE + ") as " + STATS_DUREE_AVG +
+                    " from " + TABLE_COURSE + " where " + COURSE_TYPE + "= ?";
+    // La requête pour obtenir toutes les statistiques associées à un trajet
+    private static final String REQUETE_STATISTIQUES_TRAJET =
+            "select sum(" + COURSE_CALORIES + ") as " + STATS_CALORIES_SUM +
+                    ", avg(" + COURSE_CALORIES + ") as " + STATS_CALORIES_AVG +
+                    ", avg(" + COURSE_VITESSE + ") as " + STATS_VITESSE_AVG +
+                    ", sum(" + COURSE_DUREE + ") as " + STATS_DUREE_SUM +
+                    ", avg(" + COURSE_DUREE + ") as " + STATS_DUREE_AVG +
+                    ", count(" + COURSE_ID + ") as " + STATS_COUNT_TRAJET +
+                    " from " + TABLE_COURSE + " where " + COURSE_TRAJET_ID + " = ?";
     // Script de création de la table course
     private static final String CREATE_TABLE_COURSE = "CREATE TABLE " + TABLE_COURSE + "("
             + COURSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -266,25 +287,9 @@ public class DbHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(trajet.getId())});
 
         deletePoints(db, trajet.getId());
-        insertPoints(db, trajet.getId(), trajet.getListePoints());
+        ajouterTousPoints(db, trajet.getId(), trajet.getListePoints());
 
         db.close();
-    }
-
-    /**
-     * Insère une liste de point liée à un trajet
-     */
-    private void insertPoints(SQLiteDatabase db, long trajetId, LinkedList<PointCourse> listePoitns) {
-        ContentValues values;
-
-        for (PointCourse point : listePoitns) {
-            values = new ContentValues();
-            values.put(POINT_TRAJET_ID, trajetId);
-            values.put(POINT_LATITUDE, point.getLatitude());
-            values.put(POINT_LONGITUDE, point.getLongitude());
-            values.put(POINT_DISTANCE, point.getDistance());
-            db.insert(TABLE_POINT, null, values);
-        }
     }
 
     /**
@@ -381,10 +386,16 @@ public class DbHelper extends SQLiteOpenHelper {
         return courses;
     }
 
+    /**
+     * Enlève toutes les courses de la table par type
+     */
     public void viderHistorique(TypeCourse typeCourse) {
         getWritableDatabase().delete(TABLE_COURSE, COURSE_TYPE + " = ?", new String[]{typeCourse.name()});
     }
 
+    /**
+     * Insère un trajet et tous les points associées
+     */
     public void ajouterTrajet(Trajet trajet) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -398,6 +409,9 @@ public class DbHelper extends SQLiteOpenHelper {
         ajouterTousPoints(db, trajet.getId(), trajet.getListePoints());
     }
 
+    /**
+     * Insère une liste de point liée à un trajet dans une seule transaction par soucie de performance
+     */
     private void ajouterTousPoints(SQLiteDatabase db, long id, LinkedList<PointCourse> listePoints) {
         ContentValues nouveauPoint = new ContentValues();
 
@@ -418,21 +432,13 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Sélectionne toutes les statistiques en une série de fonctions de groupement
+     */
     public Statistiques getStats(TypeCourse typeCourse) {
         SQLiteDatabase db = getReadableDatabase();
         Statistiques statistiques = new Statistiques();
-        Cursor cursor = db.rawQuery(
-                "select sum(" + COURSE_CALORIES + ") as " + STATS_CALORIES_SUM +
-                        ", avg(" + COURSE_CALORIES + ") as " + STATS_CALORIES_AVG +
-                        ", sum(" + COURSE_PAS + ") as " + STATS_PAS_SUM +
-                        ", avg(" + COURSE_PAS + ") as " + STATS_PAS_AVG +
-                        ", avg(" + COURSE_VITESSE + ") as " + STATS_VITESSE_AVG +
-                        ", sum(" + COURSE_DISTANCE + ") as " + STATS_DISTANCE_SUM +
-                        ", avg(" + COURSE_DISTANCE + ") as " + STATS_DISTANCE_AVG +
-                        ", sum(" + COURSE_DUREE + ") as " + STATS_DUREE_SUM +
-                        ", avg(" + COURSE_DUREE + ") as " + STATS_DUREE_AVG +
-                        " from " + TABLE_COURSE + " where " + COURSE_TYPE + "= ?"
-                , new String[]{typeCourse.name()});
+        Cursor cursor = db.rawQuery(REQUETE_STATISTIQUES, new String[]{typeCourse.name()});
 
         if (cursor != null && cursor.moveToFirst()) {
             statistiques.setCaloriesMoyennes(cursor.getInt(cursor.getColumnIndex(STATS_CALORIES_AVG)));
@@ -453,18 +459,13 @@ public class DbHelper extends SQLiteOpenHelper {
         return statistiques;
     }
 
+    /**
+     * Sélectionne toutes les statistiques associées à un trajet
+     */
     public Statistiques getStatsTrajet(Trajet trajet) {
         SQLiteDatabase db = getReadableDatabase();
         Statistiques statistiques = new Statistiques();
-        Cursor cursor = db.rawQuery(
-                "select sum(" + COURSE_CALORIES + ") as " + STATS_CALORIES_SUM +
-                        ", avg(" + COURSE_CALORIES + ") as " + STATS_CALORIES_AVG +
-                        ", avg(" + COURSE_VITESSE + ") as " + STATS_VITESSE_AVG +
-                        ", sum(" + COURSE_DUREE + ") as " + STATS_DUREE_SUM +
-                        ", avg(" + COURSE_DUREE + ") as " + STATS_DUREE_AVG +
-                        ", count(" + COURSE_ID + ") as " + STATS_COUNT_TRAJET +
-                        " from " + TABLE_COURSE + " where " + COURSE_TRAJET_ID + " = ?"
-                , new String[]{Long.toString(trajet.getId())});
+        Cursor cursor = db.rawQuery(REQUETE_STATISTIQUES_TRAJET, new String[]{Long.toString(trajet.getId())});
 
         if (cursor != null && cursor.moveToFirst()) {
             statistiques.setCaloriesMoyennes(cursor.getInt(cursor.getColumnIndex(STATS_CALORIES_AVG)));
@@ -481,6 +482,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return statistiques;
     }
 
+    /**
+     * Supprime un trajet
+     */
     public void deleteTrajet(Trajet trajet) {
         SQLiteDatabase db = getWritableDatabase();
         Integer intNull = null;
