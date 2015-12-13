@@ -55,6 +55,7 @@
     <string name="activity_history_confirm_message">Êtes-vous sûr de vouloir supprimer tout l\'historique pour ce type de course?</string>
     <string name="menu_history_clear">Supprimer l\'historique</string>
     <string name="menu_history_sort">Trier l\'historique</string>
+    <string name="activity_history_dialog_title">Trier l\'historique</string>
     <string name="activity_history_dialog_sort_date">Par date</string>
     <string name="activity_history_dialog_sort_trajet">Par trajet</string>
     <string name="activity_history_dialog_sort_duree">Par durée</string>

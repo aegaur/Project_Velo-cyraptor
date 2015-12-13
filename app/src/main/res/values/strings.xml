@@ -61,6 +61,7 @@
     </string>
     <string name="menu_history_clear">Clear history</string>
     <string name="menu_history_sort">Sort history</string>
+    <string name="activity_history_dialog_title">Sort the history</string>
     <string name="activity_history_dialog_sort_date">By date</string>
     <string name="activity_history_dialog_sort_trajet">By path</string>
     <string name="activity_history_dialog_sort_duree">By duration</string>

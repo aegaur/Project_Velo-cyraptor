@@ -74,7 +74,7 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private void dialogSortHistory() {
         final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(this);
 
-        constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
+        constructeurDialog.setTitle(R.string.activity_history_dialog_title);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
 
         for (HistorySorts historySorts : HistorySorts.values()) {
