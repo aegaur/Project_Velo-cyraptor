@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
@@ -22,13 +23,13 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private DbHelper dbHelper;
+    private CourseFragment[] tabFragments;
+    private int indiceSortChoisi = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_history);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -41,8 +42,11 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(CourseFragment.newInstance(TypeCourse.A_PIED), getString(R.string.activity_run_section_title));
-        adapter.addFragment(CourseFragment.newInstance(TypeCourse.A_VELO), getString(R.string.activity_bike_section_title));
+        tabFragments = new CourseFragment[TypeCourse.values().length];
+        tabFragments[0] = CourseFragment.newInstance(TypeCourse.A_PIED);
+        tabFragments[1] = CourseFragment.newInstance(TypeCourse.A_VELO);
+        adapter.addFragment(tabFragments[0], getString(R.string.activity_run_section_title));
+        adapter.addFragment(tabFragments[1], getString(R.string.activity_bike_section_title));
         viewPager.setAdapter(adapter);
     }
 
@@ -59,9 +63,38 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         if (id == R.id.menu_history_clear) {
             confirmClearHistory();
             return true;
+        } else if (id == R.id.menu_history_sort) {
+            dialogSortHistory();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dialogSortHistory() {
+        final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(this);
+
+        constructeurDialog.setTitle(R.string.activity_run_path_selection_title);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add(getString(R.string.activity_run_path_selection_none));
+
+        for (HistorySorts historySorts : HistorySorts.values()) {
+            arrayAdapter.add(historySorts.name());
+        }
+        constructeurDialog.setSingleChoiceItems(arrayAdapter, indiceSortChoisi, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                indiceSortChoisi = i;
+                reloadFragments();
+            }
+        });
+        constructeurDialog.show();
+    }
+
+    private void reloadFragments() {
+        for (CourseFragment courseFragment : tabFragments) {
+            courseFragment.rearangerListe(HistorySorts.values()[indiceSortChoisi]);
+        }
     }
 
     @Override
@@ -86,6 +119,8 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     }
 
     private void clearHistory() {
-        dbHelper.viderHistorique(tabLayout.getSelectedTabPosition() == 0 ? TypeCourse.A_PIED : TypeCourse.A_VELO);
+        CourseFragment courseFragment = tabFragments[tabLayout.getSelectedTabPosition()];
+        dbHelper.viderHistorique(courseFragment.getTypeCourse());
+        courseFragment.refraichir();
     }
 }

@@ -205,4 +205,8 @@ public class GestionnaireMap implements OnMapReadyCallback {
     public double getDistanceCouranteFantome() {
         return distanceCouranteFantome;
     }
+
+    public boolean isReady() {
+        return map.getMyLocation() != null;
+    }
 }

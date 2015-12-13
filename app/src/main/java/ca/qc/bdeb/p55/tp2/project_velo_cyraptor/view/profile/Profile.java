@@ -3,10 +3,7 @@ package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.*;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Profil;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Sexe;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 public class Profile extends ActionBarActivity {
 
     private static final double RATIO_CONVERSION_POIDS = 2.2;
+    private static final int RADIX = 10;
 
     private DbHelper dbHelper;
     private Profil profil;
@@ -31,6 +29,8 @@ public class Profile extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         dbHelper = DbHelper.getInstance(this);
         affecterViews();
         initSpinnerSexe();
@@ -48,11 +48,48 @@ public class Profile extends ActionBarActivity {
     }
 
     private void sauvegarderProfil() {
-        this.profil.setAge(Integer.parseInt(txtAge.getText().toString()));
-        this.profil.setTailleCm(Integer.parseInt(txtTaille.getText().toString()));
-        this.profil.setPoidsLbs(kgEnLbs(Integer.parseInt(txtPoids.getText().toString())));
+        boolean success = true;
+        String strAge = txtAge.getText().toString();
+        String strTaille = txtTaille.getText().toString();
+        String strPoids = txtPoids.getText().toString();
+        if (isInteger(strAge)) {
+            this.profil.setAge(Integer.parseInt(strAge));
+        } else {
+            success = false;
+        }
+        if (isInteger(strTaille)) {
+            this.profil.setTailleCm(Integer.parseInt(strTaille));
+        } else {
+            success = false;
+        }
+        if (isInteger(strPoids)) {
+            this.profil.setPoidsLbs(kgEnLbs(Integer.parseInt(strPoids)));
+        } else {
+            success = false;
+        }
         this.profil.setSexe(Sexe.getSexeByIndex(this.spnSexe.getSelectedItemPosition()));
-        dbHelper.updateProfil(profil);
+        if (success) {
+            success = dbHelper.updateProfil(profil);
+        }
+        Toast.makeText(this, success ? R.string.activity_profile_tst_save_success
+                : R.string.activity_profile_tst_save_failure, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * @param s
+     * @return
+     * @source http://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java
+     */
+    public static boolean isInteger(String s) {
+        if (s.isEmpty()) return false;
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0 && s.charAt(i) == '-') {
+                if (s.length() == 1) return false;
+                else continue;
+            }
+            if (Character.digit(s.charAt(i), RADIX) < 0) return false;
+        }
+        return true;
     }
 
     private void affecterViews() {

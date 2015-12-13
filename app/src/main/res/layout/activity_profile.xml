@@ -6,7 +6,7 @@
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
               android:paddingBottom="@dimen/activity_vertical_margin"
-              tools:context="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.profile.Profile"
+              tools:context=".view.run.Run"
               android:orientation="vertical">
 
     <LinearLayout android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                   android:layout_weight="1"
                   android:gravity="center_horizontal"
                   android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:textSize="26sp"/>
+                  android:textSize="26sp" android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                   android:layout_weight="1"
                   android:gravity="center_horizontal"
                   android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:textSize="26sp"/>
+                  android:textSize="26sp" android:inputType="number"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                   android:layout_weight="1"
                   android:gravity="center_horizontal"
                   android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:textSize="26sp"/>
+                  android:textSize="26sp" android:inputType="number"/>
     </LinearLayout>
 
     <Button
@@ -94,6 +94,7 @@
             android:layout_height="match_parent"
             android:text="@string/activity_profile_btn_save"
             android:id="@+id/activity_profile_btn_save"
+            android:layout_margin="16dp"
             android:layout_weight="1.05"
             android:background="@color/colorAccent"/>
 

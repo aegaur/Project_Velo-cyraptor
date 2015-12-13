@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.statistics.TrajetDetail">
+    <item android:id="@+id/fragment_stats_trajet_menu_suppr"
+          android:title="@string/fragment_stats_trajet_menu_suppr"
+          android:icon="@drawable/ic_action_discard"
+          android:orderInCategory="100"
+          app:showAsAction="ifRoom|withText"/>
+</menu>
