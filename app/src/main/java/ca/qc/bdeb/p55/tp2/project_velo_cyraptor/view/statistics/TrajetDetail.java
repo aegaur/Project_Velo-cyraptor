@@ -74,7 +74,7 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.fragment_stats_trajet_menu_suppr) {
+        if (id == R.id.activity_trajet_menu_suppr) {
             confirmerSuppressionTrajet();
             return true;
         }

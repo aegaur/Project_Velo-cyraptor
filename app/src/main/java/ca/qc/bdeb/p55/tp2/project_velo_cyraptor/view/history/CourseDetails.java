@@ -1,14 +1,19 @@
 package ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.history;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.PointCourse;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.TypeCourse;
+import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.persistance.DbHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -69,6 +74,7 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
 
     /**
      * Convertit la durée de millisecondes à minutes
+     *
      * @param millisecondes la durée en milisecondes
      * @return
      */
@@ -94,6 +100,24 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_course_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.activity_course_detail_suppr) {
+            confirmerSuppressionCourse();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -147,5 +171,23 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
             builder.include(latLng);
         }
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING_CENTER_ALL_POINTS));
+    }
+
+    /**
+     * Confirme la suppression du de la course
+     */
+    private void confirmerSuppressionCourse() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(R.string.activity_course_dialog_suppr_title)
+                .setMessage(R.string.activity_course_dialog_suppr_message)
+                .setPositiveButton(R.string.activity_course_dialog_suppr_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DbHelper.getInstance(CourseDetails.this).deleteCourse(course);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.activity_course_dialog_suppr_no, null).show();
     }
 }

@@ -43,19 +43,23 @@
     <string name="activity_run_path_creation_yes">Oui</string>
     <string name="activity_run_path_creation_no">Non</string>
     <string name="activity_run_menu_musique">Musique</string>
-    <string name="activity_run_toast_location_not_ready">La position n\'est pas disponnible pour le momment, réessayer dans quelques secondes</string>
+    <string name="activity_run_toast_location_not_ready">La position n\'est pas disponnible pour le momment, réessayer
+        dans quelques secondes</string>
     <string name="activity_run_path_mise_a_jour_title">Nouveau record</string>
-    <string name="activity_run_path_mise_a_jour_message">Il semblerrait que vous avez battu le meilleur temps pour ce trajet, voulez-vous que votre temps devienne le nouveau record?</string>
+    <string name="activity_run_path_mise_a_jour_message">Il semblerrait que vous avez battu le meilleur temps pour ce
+        trajet, voulez-vous que votre temps devienne le nouveau record?</string>
     <string name="activity_run_path_mise_a_jour_yes">Oui</string>
     <string name="activity_run_path_mise_a_jour_no">Non</string>
 
     <string name="activity_history_confirm_yes">Oui</string>
     <string name="activity_history_confirm_no">Non</string>
     <string name="activity_history_confirm_title">Supprimer l\'historique</string>
-    <string name="activity_history_confirm_message">Êtes-vous sûr de vouloir supprimer tout l\'historique pour ce type de course?</string>
+    <string name="activity_history_confirm_message">Êtes-vous sûr de vouloir supprimer tout l\'historique pour ce
+        type de course?</string>
     <string name="menu_history_clear">Supprimer l\'historique</string>
     <string name="menu_history_sort">Trier l\'historique</string>
     <string name="activity_history_dialog_title">Trier l\'historique</string>
+    <string name="activity_history_dialog_cancel">Annuler</string>
     <string name="activity_history_dialog_sort_date">Par date</string>
     <string name="activity_history_dialog_sort_trajet">Par trajet</string>
     <string name="activity_history_dialog_sort_duree">Par durée</string>
@@ -68,6 +72,11 @@
     <string name="activity_profile_btn_save">Sauvegarder les changements</string>
 
     <string name="fragment_course_unite_temps">minutes</string>
+    <string name="activity_course_menu_suppr">Supprimer</string>
+    <string name="activity_course_dialog_suppr_title">Supprimer une course</string>
+    <string name="activity_course_dialog_suppr_message">Êtes-vous sûr de supprimer cette course?</string>
+    <string name="activity_course_dialog_suppr_yes">Oui</string>
+    <string name="activity_course_dialog_suppr_no">Non</string>
 
     <string name="content_course_lbl_date_defaut">00/00/2000</string>
     <string name="content_course_lbl_duree_defaut">%.2f min</string>

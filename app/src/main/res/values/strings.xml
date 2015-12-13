@@ -49,7 +49,8 @@
     <string name="activity_run_toast_location_not_ready">Location is not ready yet, try again in a few seconds</string>
     <string name="activity_run_path_mise_a_jour_title">New highscore</string>
     <string name="activity_run_path_mise_a_jour_message">It seems you beat the best time for this path, do you want to
-        have your time be the new highscore?</string>
+        have your time be the new highscore?
+    </string>
     <string name="activity_run_path_mise_a_jour_yes">Yes</string>
     <string name="activity_run_path_mise_a_jour_no">No</string>
 
@@ -62,6 +63,7 @@
     <string name="menu_history_clear">Clear history</string>
     <string name="menu_history_sort">Sort history</string>
     <string name="activity_history_dialog_title">Sort the history</string>
+    <string name="activity_history_dialog_cancel">Cancel</string>
     <string name="activity_history_dialog_sort_date">By date</string>
     <string name="activity_history_dialog_sort_trajet">By path</string>
     <string name="activity_history_dialog_sort_duree">By duration</string>
@@ -73,7 +75,12 @@
     <string name="activity_profile_lbl_invite_sexe">Sex :</string>
     <string name="activity_profile_btn_save">Save changes</string>
 
-    <string name="fragment_course_unite_temps">minutes</string>
+    <string name="activity_course_unite_temps">minutes</string>
+    <string name="activity_course_menu_suppr">Delete</string>
+    <string name="activity_course_dialog_suppr_title">Delete run</string>
+    <string name="activity_course_dialog_suppr_message">Are you sure to delete this run?</string>
+    <string name="activity_course_dialog_suppr_yes">Yes</string>
+    <string name="activity_course_dialog_suppr_no">No</string>
 
     <string name="content_course_lbl_date_defaut">00/00/2000</string>
     <string name="content_course_lbl_duree_defaut">%.2f min</string>
@@ -127,7 +134,7 @@
     <string name="fragment_stats_trajet_lbl_distance_defaut">%.2f km</string>
     <string name="fragment_stats_trajet_lbl_vitesse_defaut">%.2f km/h</string>
     <string name="fragment_stats_trajet_menu_suppr">Delete</string>
-    <string name="fragment_stats_trajet_dialog_suppr_title">Delete Path</string>
+    <string name="fragment_stats_trajet_dialog_suppr_title">Delete path</string>
     <string name="fragment_stats_trajet_dialog_suppr_message">Are you sure to delete this path?</string>
     <string name="fragment_stats_trajet_dialog_suppr_yes">Yes</string>
     <string name="fragment_stats_trajet_dialog_suppr_no">No</string>

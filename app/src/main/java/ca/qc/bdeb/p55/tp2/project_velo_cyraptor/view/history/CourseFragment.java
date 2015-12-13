@@ -31,6 +31,13 @@ public class CourseFragment extends Fragment {
     private DbHelper dbHelper;
     private RecyclerView recyclerView;
     private HistorySorts historySorts = HistorySorts.DATE;
+    /**
+     * Indique si le fragment a été créé et si on peut recharger sa liste, parce que le type de course ne peut être
+     * initialisé à une valeur par défaut et si on lui demande de recharger sur le onResume de son parent on plante à
+     * l'appel de la fonction de DBHelper
+     * voir History.reloadFragments()
+     */
+    private boolean fragmentCree = false;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,6 +63,7 @@ public class CourseFragment extends Fragment {
             typeCourse = (TypeCourse) getArguments().getSerializable(ARG_KEY);
         }
 
+        fragmentCree = true;
     }
 
     @Override
@@ -112,5 +120,9 @@ public class CourseFragment extends Fragment {
     public void rafraichir(HistorySorts historySorts) {
         this.historySorts = historySorts;
         rafraichir();
+    }
+
+    boolean isFragmentCree() {
+        return fragmentCree;
     }
 }

@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
 import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.model.Course;
@@ -23,6 +25,9 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private DbHelper dbHelper;
+    /**
+     * Tableau de tous les fragments de l'activité hitory afin qu'ils soient facilement tous accessibles
+     */
     private CourseFragment[] tabFragments;
     private int indiceSortChoisi = 0;
 
@@ -38,6 +43,12 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         tabLayout.setupWithViewPager(viewPager);
 
         dbHelper = DbHelper.getInstance(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadFragments();
     }
 
     /**
@@ -76,7 +87,7 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     }
 
     /**
-     * Crée une boite de dialogue pour une sorte de tri
+     * Créer une boite de dialogue pour une sorte de tri
      */
     private void dialogSortHistory() {
         final AlertDialog.Builder constructeurDialog = new AlertDialog.Builder(this);
@@ -87,11 +98,19 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
         for (HistorySorts historySorts : HistorySorts.values()) {
             arrayAdapter.add(getString(historySorts.getDISPLAY_ID()));
         }
+        constructeurDialog.setNegativeButton(R.string.activity_history_dialog_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         constructeurDialog.setSingleChoiceItems(arrayAdapter, indiceSortChoisi, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
                 indiceSortChoisi = i;
                 reloadFragments();
+                dialogInterface.dismiss();
             }
         });
         constructeurDialog.show();
@@ -102,12 +121,15 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
      */
     private void reloadFragments() {
         for (CourseFragment courseFragment : tabFragments) {
-            courseFragment.rafraichir(HistorySorts.values()[indiceSortChoisi]);
+            if (courseFragment.isFragmentCree()) {
+                courseFragment.rafraichir(HistorySorts.values()[indiceSortChoisi]);
+            }
         }
     }
 
     /**
      * Appelle l'activité de détails
+     *
      * @param course la course choisie
      */
     @Override

@@ -498,4 +498,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
         db.delete(TABLE_TRAJET, TRAJET_ID + " = ?", new String[]{String.valueOf(trajet.getId())});
     }
+
+    public void deleteCourse(Course course) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_COURSE, COURSE_ID + " = ?", new String[]{String.valueOf(course.getId())});
+    }
 }

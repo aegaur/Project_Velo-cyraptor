@@ -7,9 +7,9 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.R;
  */
 public enum HistorySorts {
     DATE("DATE desc", R.string.activity_history_dialog_sort_date),
-    DUREE("DUREE", R.string.activity_history_dialog_sort_duree),
-    DISTANCE("DISTANCE", R.string.activity_history_dialog_sort_distance),
-    TRAJET_ID("TRAJET_ID", R.string.activity_history_dialog_sort_trajet);
+    DUREE("DUREE desc", R.string.activity_history_dialog_sort_duree),
+    DISTANCE("DISTANCE desc", R.string.activity_history_dialog_sort_distance),
+    TRAJET_ID("TRAJET_ID desc", R.string.activity_history_dialog_sort_trajet);
 
     private final String ORDER_BY_STRING;
     private final int DISPLAY_ID;

@@ -404,11 +404,13 @@ public class RunFragment extends Fragment implements CallbackMap {
     }
 
     /**
-     * Créer un nouveau trajet
+     * Créer un nouveau trajet et l'affecte à la course
      */
     private void creerNouveauTrajer(String nomTrajet) {
-        dbHelper.ajouterTrajet(new Trajet(nomTrajet, gestionnaireMap.getDistanceTotale(),
-                choChronometre.getElapsedTimeInMillis(), gestionnaireMap.getListePoints()));
+        Trajet nouveauTrajet = new Trajet(nomTrajet, gestionnaireMap.getDistanceTotale(),
+            choChronometre.getElapsedTimeInMillis(), gestionnaireMap.getListePoints());
+        dbHelper.ajouterTrajet(nouveauTrajet);
+        this.course.setTrajet(nouveauTrajet);
     }
 
     /**

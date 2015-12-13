@@ -74,7 +74,8 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
             this.course = course;
             lblDate.setText(this.course.getDATE().toString());
             lblTrajet.setText(this.course.getTrajet() != null ? this.course.getTrajet().getNom() : context.getResources().getString(R.string.activity_run_path_selection_none));
-            lblTemps.setText(TimeUnit.MILLISECONDS.toMinutes(this.course.getDuree()) + " " + context.getResources().getString(R.string.fragment_course_unite_temps));
+            lblTemps.setText(TimeUnit.MILLISECONDS.toMinutes(this.course.getDuree())
+                    + " " + context.getResources().getString(R.string.activity_course_unite_temps));
             lblDistance.setText(String.format(context.getResources().getString(R.string.activity_run_lbl_distance_valeur), this.course.getDistance()));
         }
     }
