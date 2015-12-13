@@ -47,6 +47,9 @@ public class Profile extends ActionBarActivity {
         });
     }
 
+    /**
+     * Sauvegarde les informations du profil dans la base de données
+     */
     private void sauvegarderProfil() {
         boolean success = true;
         String strAge = txtAge.getText().toString();
@@ -76,8 +79,9 @@ public class Profile extends ActionBarActivity {
     }
 
     /**
-     * @param s
-     * @return
+     * Détermine si une string est un entier
+     * @param s la string
+     * @return vrai si c'est un entier faux sinon
      * @source http://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java
      */
     public static boolean isInteger(String s) {
@@ -92,6 +96,9 @@ public class Profile extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * Initialize les variables de classe avec la vue associés
+     */
     private void affecterViews() {
         txtAge = (EditText) findViewById(R.id.activity_profile_txt_age);
         txtTaille = (EditText) findViewById(R.id.activity_profile_txt_taille);
@@ -100,6 +107,9 @@ public class Profile extends ActionBarActivity {
         btnSauvegarder = (Button) findViewById(R.id.activity_profile_btn_save);
     }
 
+    /**
+     * Affêcte les valeurs du profile aux champs
+     */
     private void affecterValeurs() {
         profil = dbHelper.getProfil();
         txtAge.setText(Integer.toString(profil.getAge()));
@@ -108,6 +118,9 @@ public class Profile extends ActionBarActivity {
         spnSexe.setSelection(profil.getSexe().getINDEX());
     }
 
+    /**
+     * Initialize le spniier de sexe
+     */
     private void initSpinnerSexe() {
         ArrayList<String> listeString = new ArrayList<>();
         for (Sexe sexe : Sexe.values()) {
@@ -116,10 +129,20 @@ public class Profile extends ActionBarActivity {
         spnSexe.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listeString));
     }
 
+    /**
+     * Convertis des livres en kilo
+     * @param lbs la valeure en livres
+     * @return la valeure en kilo
+     */
     private long lbsEnKg(double lbs) {
         return Math.round(lbs / RATIO_CONVERSION_POIDS);
     }
 
+    /**
+     * Convertis des kilo en livres
+     * @param kilos la valeure en kilo
+     * @return la valeure en livres
+     */
     private int kgEnLbs(int kilos) {
         return (int) Math.round(kilos * RATIO_CONVERSION_POIDS);
     }

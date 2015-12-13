@@ -36,12 +36,18 @@ public class CustomChronometer extends TextView {
         initialiserMyChronometer();
     }
 
+    /**
+     * Initialize les variable de classe
+     */
     private void initialiserMyChronometer() {
         handler = new Handler();
         this.running = false;
         elapsedTimeEnMilliSec = 0;
     }
 
+    /**
+     * Démarre le timer(Thread)
+     */
     private void startTimer() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -53,22 +59,33 @@ public class CustomChronometer extends TextView {
         }, TEMPS_REPETITION_TIMER, TEMPS_REPETITION_TIMER);
     }
 
+    /**
+     * Arrête le timer(Thread)
+     */
     private void stopTimer() {
         timer.cancel();
         timer.purge();
     }
 
+    /**
+     * Démarre le chronomêtre
+     */
     public void start() {
         running = true;
         startTimer();
     }
-
+    /**
+     * Redémarre le chronomêtre
+     */
     public void reset() {
         this.stop();
         elapsedTimeEnMilliSec = 0;
         updateView();
     }
 
+    /**
+     * Arrête le chronomètre
+     */
     public void stop() {
         running = false;
         stopTimer();
@@ -78,6 +95,9 @@ public class CustomChronometer extends TextView {
         return running;
     }
 
+    /**
+     * Mets a jours le chronomètre a chaque secondes
+     */
     private synchronized void updateView() {
         long heures = TimeUnit.MILLISECONDS.toHours(elapsedTimeEnMilliSec);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeEnMilliSec) -
