@@ -70,6 +70,9 @@ public class CourseFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initialise la liste de courses
+     */
     private void chargerCourses() {
         List<Course> listeCourses = dbHelper.getTousCourses(typeCourse.name(), historySorts);
         recyclerView.setAdapter(new CourseAdapter(listeCourses, mListener, getContext()));
@@ -96,12 +99,18 @@ public class CourseFragment extends Fragment {
         return typeCourse;
     }
 
-    public void refraichir(){
+    /**
+     * Mets la liste à jour
+     */
+    public void rafraichir(){
         chargerCourses();
     }
 
-    public void rearangerListe(HistorySorts historySorts) {
+    /**
+     * Mets la liste à jour avec le nouveau tri
+     */
+    public void rafraichir(HistorySorts historySorts) {
         this.historySorts = historySorts;
-        chargerCourses();
+        rafraichir();
     }
 }

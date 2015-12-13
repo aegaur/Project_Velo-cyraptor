@@ -93,7 +93,7 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
 
     private void reloadFragments() {
         for (CourseFragment courseFragment : tabFragments) {
-            courseFragment.rearangerListe(HistorySorts.values()[indiceSortChoisi]);
+            courseFragment.rafraichir(HistorySorts.values()[indiceSortChoisi]);
         }
     }
 
@@ -121,6 +121,6 @@ public class History extends AppCompatActivity implements OnListFragmentInteract
     private void clearHistory() {
         CourseFragment courseFragment = tabFragments[tabLayout.getSelectedTabPosition()];
         dbHelper.viderHistorique(courseFragment.getTypeCourse());
-        courseFragment.refraichir();
+        courseFragment.rafraichir();
     }
 }

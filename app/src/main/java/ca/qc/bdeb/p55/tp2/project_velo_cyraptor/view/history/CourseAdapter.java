@@ -14,11 +14,7 @@ import ca.qc.bdeb.p55.tp2.project_velo_cyraptor.view.util.OnListFragmentInteract
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link Course} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder> {
 
     private final List<Course> mValues;

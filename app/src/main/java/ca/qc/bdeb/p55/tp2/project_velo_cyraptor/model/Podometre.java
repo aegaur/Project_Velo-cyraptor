@@ -22,6 +22,10 @@ public class Podometre implements SensorEventListener {
         stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
     }
 
+    /**
+     * Est appeler a chaque nouveau pas et incrémente le noubre de pas lorsqu'on l'écoute
+     * @param event l'évènnement du sensor
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (ecouter) {
@@ -33,18 +37,30 @@ public class Podometre implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
+    /**
+     * Démarre l'écoute du sensor
+     */
     public void start() {
         sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
+    /**
+     * Redémarre l'écoute
+     */
     public void resume() {
         ecouter = true;
     }
 
+    /**
+     * Arrête l'écoute
+     */
     public void pause() {
         ecouter = false;
     }
 
+    /**
+     * Arrête l'écoute du sensor et réinitialize le nombre de pas
+     */
     public void stop() {
         sensorManager.unregisterListener(this, stepCounterSensor);
         nombrePas = 0;

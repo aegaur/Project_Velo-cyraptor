@@ -53,6 +53,9 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
         modifierVueSiNecessaire();
     }
 
+    /**
+     * Assigne les valeurs du modèle à l'interface
+     */
     private void assignerValeurs() {
         lblCalories.setText(Integer.toString(course.getCalories()));
         lblDate.setText(course.getDATE().toString());
@@ -64,12 +67,20 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
         }
     }
 
-    private double formatDuree(double duree1) {
-        double duree2 = duree1 / NOMBRE_MILLI_DANS_SEC;
-        double duree3 = duree2 / NOMBRE_SECONDES_DANS_MIN;
-        return duree3;
+    /**
+     * Convertit la durée de millisecondes à minutes
+     * @param millisecondes la durée en milisecondes
+     * @return
+     */
+    private double formatDuree(double millisecondes) {
+        double secondes = millisecondes / NOMBRE_MILLI_DANS_SEC;
+        double minutes = secondes / NOMBRE_SECONDES_DANS_MIN;
+        return minutes;
     }
 
+    /**
+     * Modifie la vue en fonction du type de course et de la présence d'un trajet
+     */
     private void modifierVueSiNecessaire() {
         if (course.getTrajet() == null) {
             fragMap.getView().setVisibility(View.INVISIBLE);
@@ -85,6 +96,9 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
         setUpMapIfNeeded();
     }
 
+    /**
+     * Initialize les variables de classe avec la vue associés
+     */
     private void assignerComposants() {
         lblCalories = (TextView) findViewById(R.id.content_course_details_lbl_calories);
         lblDate = (TextView) findViewById(R.id.content_course_details_lbl_date);
@@ -95,6 +109,9 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
         fragMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.content_course_details_map);
     }
 
+    /**
+     * Instancie la map si elle est nulle
+     */
     private void setUpMapIfNeeded() {
         if (map == null) {
             map = fragMap.getMap();
@@ -104,13 +121,18 @@ public class CourseDetails extends AppCompatActivity implements GoogleMap.OnMapL
         }
     }
 
+    /**
+     * Démarre l'écoute de l'évènement OnMapLoaded
+     */
     private void setUpMap() {
         if (course.getTrajet() != null) {
-            map.getUiSettings().setAllGesturesEnabled(false);
             map.setOnMapLoadedCallback(this);
         }
     }
 
+    /**
+     * Initialise les paramètres de la map
+     */
     @Override
     public void onMapLoaded() {
         LinkedList<PointCourse> listePoint = course.getTrajet().getListePoints();

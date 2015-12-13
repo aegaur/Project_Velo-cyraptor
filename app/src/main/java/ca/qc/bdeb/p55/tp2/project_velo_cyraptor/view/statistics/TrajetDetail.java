@@ -133,6 +133,9 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
         return minutes;
     }
 
+    /**
+     * Instancie la map si elle est nulle
+     */
     private void setUpMapIfNeeded() {
         if (map == null) {
             map = fragMap.getMap();
@@ -142,11 +145,16 @@ public class TrajetDetail extends AppCompatActivity implements GoogleMap.OnMapLo
         }
     }
 
+    /**
+     * Démarre l'écoute de l'évènement OnMapLoaded
+     */
     private void setUpMap() {
-        map.getUiSettings().setAllGesturesEnabled(false);
         map.setOnMapLoadedCallback(this);
     }
 
+    /**
+     * Initialise les paramètres de la map
+     */
     @Override
     public void onMapLoaded() {
         LinkedList<PointCourse> listePoint = trajet.getListePoints();
